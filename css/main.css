@@ -1220,6 +1220,7 @@ ul.recent-posts li {
     line-height: 18px !important;
     margin: 10px 0 20px !important; }
 
+.show-timeline-modal,
 .show-modal {
   background: #f1f2f2;
   color: #004085;
@@ -1235,9 +1236,11 @@ ul.recent-posts li {
   font-weight: bold;
   bottom: 0;
   left: 0; }
+  .show-timeline-modal:hover,
   .show-modal:hover {
     opacity: 1; }
   @media (max-width: 767px) {
+    .show-timeline-modal,
     .show-modal {
       display: none; } }
 

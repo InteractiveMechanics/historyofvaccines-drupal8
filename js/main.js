@@ -121,7 +121,7 @@
         if (type == 'image') {
             //$('.gallery-image-container .video').addClass('hidden');
             //$('.gallery-image-container .image').removeClass('hidden');
-            $('.gallery-items img').attr('src', 'http://media.historyofvaccines.org/images/' + root + '_265.jpg');
+            $('.gallery-items img').attr('src', 'http://media.historyofvaccines.org/images/' + root + '_540.jpg');
 
         } else if (type == 'video') {
             //$('.gallery-image-container .image').addClass('hidden');
@@ -145,11 +145,15 @@
 
     var $openseadragon = null;
     
-    $('.show-modal').on('click', function(){
+    $(document).on('click', '.show-modal', function(){
         var root = $(this).attr('data-filename');
+        var hideBrowser = $(this).attr('data-hidebrowser');
+
         baseSetup();
         populateMediaInfo(root);
-        buildBrowser(root);
+        if (hideBrowser == false) {
+            buildBrowser(root);
+        }
         buildSeadragon(root);
     });
 
@@ -296,7 +300,7 @@
 		console.log(caption, creator);
 		
 		if(uniqueID) {
-			var path = "http://www.historyofvaccines.org/timeline#EVT_" + uniqueID;
+			var path = "http://staging.historyofvaccines.org/timeline#EVT_" + uniqueID;
 			window.history.pushState("object or string", "Title", path);	
 		}
 		
@@ -371,11 +375,11 @@
 					type = 'video';	
 				}
 				
-	        	htmlString += '<div class="'+ type +'">';
+	        	htmlString += '<div class="'+ type +'" style="position:relative;">';
 	        	
 	        	if(type == 'image') {
-		        	var filename = "http://media.historyofvaccines.org/images/" + file + "_265.jpg";
-		        	htmlString += '<img src="'+ filename +'" alt="Smallpox in the Revolution">';	
+		        	var filename = "http://media.historyofvaccines.org/images/" + file + "_540.jpg";
+		        	htmlString += '<img src="'+ filename +'" alt="' + caption_arr[0] + '"><div class="show-modal" data-hidebrowser="true" data-filename="' + file + '">+</div>';
 	        	} else {
 		        	var filename = "http://media.historyofvaccines.org/mobile/video/320/" + file.split('.')[0] + ".mp4";
 					var poster = "http://media.historyofvaccines.org/mobile/video/320/" + file.split('.')[0] + ".jpg";
@@ -397,11 +401,11 @@
 				type = 'video';	
 			}
 			
-        	htmlString += '<div class="'+ type +' gallery-item hidden">';
+        	htmlString += '<div class="'+ type +' hidden">';
         	
         	if(type == 'image') {
-	        	var filename = "http://media.historyofvaccines.org/images/" + file + "_265.jpg";
-	        	htmlString += '<img src="'+ filename +'" alt="Smallpox in the Revolution">';	
+	        	var filename = "http://media.historyofvaccines.org/images/" + file + "_540.jpg";
+	        	htmlString += '<img src="'+ filename +'" alt="' + caption_arr[i] + '"><div class="show-modal" data-hidebrowser="true" data-filename="' + file + '">+</div>';	
         	} else {
 	        	var filename = "http://media.historyofvaccines.org/mobile/video/320/" + file.split('.')[0] + ".mp4";
 				var poster = "http://media.historyofvaccines.org/mobile/video/320/" + file.split('.')[0] + ".jpg";
@@ -411,18 +415,32 @@
         	htmlString += '</div></div>';
         }
         
-        var creator = '<small>' + creator_arr[0] + '</small><br />';
-	    var caption = "<b>" + caption_arr[0] + "</b>";
+        var creator = '';
+        var caption = '';
+
+        if (creator_arr[0]){
+            creator = '<span>' + creator_arr[0] + '</span><br />';
+        }
+        if (caption_arr[0]){
+    	    caption = "<b>" + caption_arr[0] + "</b>";
+        }
         
-        htmlString += "<p>" + creator + ' ' + caption + "</p>";
+        htmlString += "<p style='text-align:left;'>" + creator + ' ' + caption + "</p>";
         
         htmlString += '<div id="body-mediaitem-switcher">'
         for(var i = 0; i < file_arr.length; i++) {
 	        var file = file_arr[i];
 	        var filetype = filetype_arr[i];
 	        
-	        var creator = '<small>' + creator_arr[i] + '</small>';
-	        var caption = "<b>" + caption_arr[i] + "</b>";
+            var creator;
+            var caption;
+
+            if (creator_arr[i]){
+	            creator = '<span>' + creator_arr[i] + '</span>';
+            }
+            if (caption_arr[i]){
+	            caption = "<b>" + caption_arr[i] + "</b>";
+            }
 	        
 	        if(file != "") {
 		    
@@ -436,10 +454,10 @@
 				htmlString += '<div class="body-mediaitem-small body-mediaitem-small-timeline" data-filename="'+file+'" data-type="'+ type +'" data-caption="'+ creator + ' <br /> ' + caption +'">';
 					if(type == 'image') {
 			        	var filename = "http://media.historyofvaccines.org/images/" + file + "_265.jpg";
-			        	htmlString += '<img src="'+ filename +'" alt="Smallpox in the Revolution">';	
+			        	htmlString += '<img src="'+ filename +'" alt="' + caption_arr[i] + '">';	
 		        	} else {
 			        	var filename = "http://media.historyofvaccines.org/images/" + file + "_265.jpg";
-			        	htmlString += '<img src="'+ filename +'" alt="Smallpox in the Revolution">';
+			        	htmlString += '<img src="'+ filename +'" alt="' + caption_arr[i] + '">';
 		        	}
 				htmlString += '</div>';
 					
