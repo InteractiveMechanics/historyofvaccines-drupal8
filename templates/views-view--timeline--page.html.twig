@@ -206,7 +206,7 @@
 		});
 		
 		function filterTimeline() {
-			var path = "http://staging.historyofvaccines.org/timeline";
+			var path = "http://www.historyofvaccines.org/timeline";
 			var filters = document.getElementsByName('timeline_categories');
 			
 			if(filters[0].checked) {
@@ -272,9 +272,9 @@
         
         var pathArray = window.location.pathname.split( '/' );
         if (pathArray[1] == 'es'){
-            var url = 'http://staging.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=1';
+            var url = 'http://www.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=1';
         } else {
-            var url = 'http://staging.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=0';
+            var url = 'http://www.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=0';
         }
         //console.log(url);
         $.ajax({

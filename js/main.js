@@ -320,7 +320,7 @@
 		console.log(caption, creator);
 		
 		if(uniqueID) {
-			var path = "http://staging.historyofvaccines.org/timeline#EVT_" + uniqueID;
+			var path = "http://www.historyofvaccines.org/timeline#EVT_" + uniqueID;
 			window.history.pushState("object or string", "Title", path);	
 		}
 		
