@@ -71,7 +71,7 @@
 <script id="item-template" type="text/x-handlebars-template">
     <div style="width:220px; !important;">
         <div class="year">{{year}}</div>
-        <div class="timeline-entry" data-caption="{{#each caption}}{{this}}|,|{{/each}}" data-creator="{{#each creator}}{{this}}|,|{{/each}}" id="{{id}}" data-year="{{year}}" data-uniqueid="{{id}}" data-title="{{title}}" data-body='{{description}}' data-filename="{{#each filename}}{{this}}|,|{{/each}}" data-filetype="{{#each filetype}}{{this}}|,|{{/each}}" data-toggle="modal" data-target="#myModal">
+        <div class="timeline-entry" data-caption="{{#each caption}}{{this}}|,|{{/each}}" data-creator="{{#each creator}}{{this}}|,|{{/each}}" id="{{id}}" data-datestr="{{datestr}}" data-year="{{year}}" data-uniqueid="{{id}}" data-title="{{title}}" data-body='{{description}}' data-filename="{{#each filename}}{{this}}|,|{{/each}}" data-filetype="{{#each filetype}}{{this}}|,|{{/each}}" data-toggle="modal" data-target="#myModal">
 				{{#isVideo filename.[0]}}{{/isVideo}}
 				
 			<div class="title">{{title}}</div>
@@ -160,15 +160,17 @@
         var allCheckbox = $('#views-exposed-form-timeline-page-1 .form-select:eq(0)');
         $('#views-exposed-form-timeline-page-1 .form-select:eq(0)').parent().html(allCheckbox).append('<b>All</b>');
         
-        $('#views-exposed-form-timeline-page-1 .form-select').each(function(index){
+        /*$('#views-exposed-form-timeline-page-1 .form-select').each(function(index){
             var text = $(this).parent().text();
             var input = $(this);
 
-            if (text.startsWith(" -")){
-                $(this).parent().html(input).append(text.substr(2,text.length));
-                $(this).parent().parent().addClass('child');
-            }
-        });
+			if(text) {
+	            if (text.startsWith(" -")){
+	                $(this).parent().html(input).append(text.substr(2,text.length));
+	                $(this).parent().parent().addClass('child');
+	            }
+	        }
+        });*/
 
         $('#visualization-filters .expand').on('click tap', function () {
             $(this).toggleClass('active').parent().find('form').toggleClass('in');
@@ -204,7 +206,7 @@
 		});
 		
 		function filterTimeline() {
-			var path = "http://www.historyofvaccines.org/timeline";
+			var path = "http://staging.historyofvaccines.org/timeline";
 			var filters = document.getElementsByName('timeline_categories');
 			
 			if(filters[0].checked) {
@@ -285,7 +287,7 @@
                 for(i = 0; i < d.length; i++) {
         			append = 0;
         			for(x = 0; x < timelineData.length; x++) {
-        				if(timelineData[x].title == d[i].title && timelineData[x].year == d[i].year){
+        				if(timelineData[x].title == d[i].title){
         					append = 1;
         					append_to = x;
         				}
@@ -293,16 +295,27 @@
         
         			if(append == 1) {
         				append = 0;
+        				//timelineData[append_to].title.push(d[i].title);
         				timelineData[append_to].filename.push(d[i].filename);
                         timelineData[append_to].filetype.push(d[i].filetype);
                         timelineData[append_to].creator.push(d[i].field_creator);
                         timelineData[append_to].caption.push(d[i].field_caption);
         			} else {
                         if (d[i].year) {
+	                        
+	                        var dateStr = d[i].year;
+	                        console.log(d[i].year);
+	                        var year = '';
+	                        if(dateStr.indexOf('/') == -1) {
+		                        year = dateStr;
+	                        } else {
+		                        year = dateStr.split('/')[2];
+	                        }
+	                        
             				timelineData.push(
             					{
             						id: d[i].id,
-            						year: d[i].year,
+            						year: year,
             						title: d[i].title,
             						filename: [d[i].filename],
                                     filetype: [d[i].filetype],
@@ -312,6 +325,7 @@
                                     caption: [d[i].field_caption],
             						category: d[i].category,
             						description: d[i].description,
+            						datestr: d[i].year,
             						start: d[i].year
             					}
             				);
@@ -397,6 +411,10 @@
         				timeline.setSelection(eventLocationID, {focus: true});
                     }
 	        	}, 300);
+	        	
+	        	
+	        	console.log($('#visualization-timeline .slider'));
+	        	
                 slider = $('#visualization-timeline .slider').slider({
                     value: (Date.parse( timelineData[0].year ) - 365000000000),
                     min: (Date.parse( timelineData[0].year ) - 365000000000),
@@ -408,6 +426,7 @@
                         });
                     }
                 });
+                
                 $('.moveleft').on('click', function(){
                     var range = timeline.getWindow();
                     var interval = range.end - range.start;
@@ -445,7 +464,7 @@
       <div class="modal-body">
       	
       	<div style="cursor:pointer;" class="pull-right" data-dismiss="modal">
-      		<span class="glyphicon glyphicon-remove"></span>
+      		<span class="glyphicon glyphicon-remove" style="z-index:10;"></span>
       	</div>
       	
       	<div class="row">
