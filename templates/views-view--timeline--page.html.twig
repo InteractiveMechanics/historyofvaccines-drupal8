@@ -69,22 +69,15 @@
 		
 {% verbatim %}
 <script id="item-template" type="text/x-handlebars-template">
-<div style="width:220px; !important;">
-			<div class="year">
-				{{year}}
-			</div>
-			<div class="timeline-entry" data-caption="{{#each caption}}{{this}}|,|{{/each}}" data-creator="{{#each creator}}{{this}}|,|{{/each}}" id="{{id}}" data-year="{{year}}" data-uniqueid="{{id}}" data-title="{{title}}" data-body='{{description}}' 
-				data-filename="{{#each filename}}{{this}}|,|{{/each}}" data-filetype="{{#each filetype}}{{this}}|,|{{/each}}" data-toggle="modal" data-target="#myModal">
-					
-					{{#isVideo filename.[0]}}{{/isVideo}}
+    <div style="width:220px; !important;">
+        <div class="year">{{year}}</div>
+        <div class="timeline-entry" data-caption="{{#each caption}}{{this}}|,|{{/each}}" data-creator="{{#each creator}}{{this}}|,|{{/each}}" id="{{id}}" data-datestr="{{datestr}}" data-year="{{year}}" data-uniqueid="{{id}}" data-title="{{title}}" data-body='{{description}}' data-filename="{{#each filename}}{{this}}|,|{{/each}}" data-filetype="{{#each filetype}}{{this}}|,|{{/each}}" data-toggle="modal" data-target="#myModal">
+				{{#isVideo filename.[0]}}{{/isVideo}}
 				
-				<div class="title">
-					{{title}}
-				</div>
-				
-				<br style="clear:both" />
-			</div>
-</div>
+			<div class="title">{{title}}</div>
+			<br style="clear:both" />
+        </div>
+    </div>
 </script>
 {% endverbatim %}
 <div id="visualization">
@@ -167,15 +160,17 @@
         var allCheckbox = $('#views-exposed-form-timeline-page-1 .form-select:eq(0)');
         $('#views-exposed-form-timeline-page-1 .form-select:eq(0)').parent().html(allCheckbox).append('<b>All</b>');
         
-        $('#views-exposed-form-timeline-page-1 .form-select').each(function(index){
+        /*$('#views-exposed-form-timeline-page-1 .form-select').each(function(index){
             var text = $(this).parent().text();
             var input = $(this);
 
-            if (text.startsWith(" -")){
-                $(this).parent().html(input).append(text.substr(2,text.length));
-                $(this).parent().parent().addClass('child');
-            }
-        });
+			if(text) {
+	            if (text.startsWith(" -")){
+	                $(this).parent().html(input).append(text.substr(2,text.length));
+	                $(this).parent().parent().addClass('child');
+	            }
+	        }
+        });*/
 
         $('#visualization-filters .expand').on('click tap', function () {
             $(this).toggleClass('active').parent().find('form').toggleClass('in');
@@ -197,12 +192,14 @@
 			//alert($(this).val() + " " + $(this).is(':checked'));
 			
 			var val = $(this).val();
+            var ind = $('#views-exposed-form-timeline-page-1 .form-select').index($(this));
+
 			if(val == 'All' && $(this).is(':checked')) {
 				$('#views-exposed-form-timeline-page-1 .form-select').prop('checked', false);
 				$('#views-exposed-form-timeline-page-1 .form-select:eq(0)').prop('checked', true);
 			} else {
-				console.log($('#views-exposed-form-timeline-page-1 .form-select:eq(0)'));
-				$('#views-exposed-form-timeline-page-1 .form-select:eq(0)').prop('checked', false);
+				//console.log($('#views-exposed-form-timeline-page-1 .form-select:eq(0)'));
+                $('#views-exposed-form-timeline-page-1 .form-select:eq(0)').prop('checked', false);
 			}
 			
 			filterTimeline();
@@ -257,6 +254,7 @@
 		});
 
         var timelineData = [];
+        var data = [];
         var timelineCount;
         var slider;
         var query = getQueryVariable('timeline_categories[]');
@@ -278,18 +276,18 @@
         } else {
             var url = 'http://www.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=0';
         }
-        console.log(url);
+        //console.log(url);
         $.ajax({
             url: url,
-            success: function(data) {
-	            data = JSON.parse(data);
+            success: function(d) {
+	            d = JSON.parse(d);
                 var append = 0;
                 var append_to = 0;
 
-                for(i = 0; i < data.length; i++) {
+                for(i = 0; i < d.length; i++) {
         			append = 0;
         			for(x = 0; x < timelineData.length; x++) {
-        				if(timelineData[x].title == data[i].title && timelineData[x].year == data[i].year){
+        				if(timelineData[x].title == d[i].title){
         					append = 1;
         					append_to = x;
         				}
@@ -297,24 +295,38 @@
         
         			if(append == 1) {
         				append = 0;
-        				timelineData[append_to].filename.push(data[i].filename);
-                        timelineData[append_to].filetype.push(data[i].filetype);
-                        timelineData[append_to].creator.push(data[i].field_creator);
-                        timelineData[append_to].caption.push(data[i].field_caption);
+        				//timelineData[append_to].title.push(d[i].title);
+        				timelineData[append_to].filename.push(d[i].filename);
+                        timelineData[append_to].filetype.push(d[i].filetype);
+                        timelineData[append_to].creator.push(d[i].field_creator);
+                        timelineData[append_to].caption.push(d[i].field_caption);
         			} else {
-                        if (data[i].year) {
+                        if (d[i].year) {
+	                        
+	                        var dateStr = d[i].year;
+	                        console.log(d[i].year);
+	                        var year = '';
+	                        if(dateStr.indexOf('/') == -1) {
+		                        year = dateStr;
+	                        } else {
+		                        year = dateStr.split('/')[2];
+	                        }
+	                        
             				timelineData.push(
             					{
-            						id: data[i].id,
-            						year: data[i].year,
-            						title: data[i].title,
-            						filename: [data[i].filename],
-                                    filetype: [data[i].filetype],
-                                    creator: [data[i].field_creator],
-                                    caption: [data[i].field_caption],
-            						category: data[i].category,
-            						description: data[i].description,
-            						start: data[i].year
+            						id: d[i].id,
+            						year: year,
+            						title: d[i].title,
+            						filename: [d[i].filename],
+                                    filetype: [d[i].filetype],
+                                    filetitle: [d[i].filetitle],
+                                    filebody: [d[i].filebody],
+                                    creator: [d[i].field_creator],
+                                    caption: [d[i].field_caption],
+            						category: d[i].category,
+            						description: d[i].description,
+            						datestr: d[i].year,
+            						start: d[i].year
             					}
             				);
                         }
@@ -334,7 +346,21 @@
 				     } 
 				}
 				
-				timelineData.sort(sort_by('year', false, parseInt));                
+				timelineData.sort(sort_by('year', false, parseInt));  
+
+                // Create an array of all media items
+                $.each(timelineData, function(i){
+                    for (i = 0; i < this.filename.length; i++){
+                        data[this.filename[i]] = {
+                            root: this.filename[i],
+                            title: this.filetitle[i],
+                            description: this.filebody[i],
+                            caption: this.caption[i],
+                            creator: this.creator[i]
+                        };
+                    }
+                    //console.log(data);
+                });
 
         		//test
         		var source   = $("#item-template").html();
@@ -385,6 +411,10 @@
         				timeline.setSelection(eventLocationID, {focus: true});
                     }
 	        	}, 300);
+	        	
+	        	
+	        	console.log($('#visualization-timeline .slider'));
+	        	
                 slider = $('#visualization-timeline .slider').slider({
                     value: (Date.parse( timelineData[0].year ) - 365000000000),
                     min: (Date.parse( timelineData[0].year ) - 365000000000),
@@ -396,6 +426,7 @@
                         });
                     }
                 });
+                
                 $('.moveleft').on('click', function(){
                     var range = timeline.getWindow();
                     var interval = range.end - range.start;
@@ -433,7 +464,7 @@
       <div class="modal-body">
       	
       	<div style="cursor:pointer;" class="pull-right" data-dismiss="modal">
-      		<span class="glyphicon glyphicon-remove"></span>
+      		<span class="glyphicon glyphicon-remove" style="z-index:10;"></span>
       	</div>
       	
       	<div class="row">
