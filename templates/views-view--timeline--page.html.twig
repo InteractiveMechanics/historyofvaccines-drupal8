@@ -216,10 +216,13 @@
 				window.location = path;
 			}
 			
+			
 			var filterQuery = '';
 			for(var i = 1; i < filters.length; i++) {
 				if(filters[i].checked) {
 					filterQuery += 'timeline_categories[]=' + filters[i].value + '&';
+					
+					console.log(filters[i].value);
 				}	
 			} 
 			
@@ -242,6 +245,36 @@
             }
             return(false);
         }
+        
+        function getURLParam(key,target){
+	        var values = [];
+	        if(!target){
+	            target = location.href;
+	        }
+	
+	        key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+	
+	        var pattern = key + '=([^&#]+)';
+	        var o_reg = new RegExp(pattern,'ig');
+	        while(true){
+	            var matches = o_reg.exec(target);
+	            if(matches && matches[1]){
+	                values.push(matches[1]);
+	            }
+	            else{
+	                break;
+	            }
+	        }
+	
+	        if(!values.length){
+	             return null;   
+	         }
+	        else{
+	           return values;
+	        }
+	
+	    }
+
 
 		Handlebars.registerHelper('isVideo', function(filename) {
             if (filename) {
@@ -260,29 +293,35 @@
         var timelineCount;
         var slider;
         var query = getQueryVariable('timeline_categories[]');
+        
+        var params = getURLParam('timeline_categories[]');
+        
+        
         var timeline;
-        
-        if (query) {
-            var ids = query;
+        var url = "";
+        if (params) {
+            
+            var pathArray = window.location.pathname.split( '/' );
+
+	        if (pathArray[1] == 'es'){
+	            url = 'http://www.historyofvaccines.org/timeline.php?category_ids='+ params.join(); + '&is_espanol=1';
+	        } else {
+	            url = 'http://www.historyofvaccines.org/timeline.php?category_ids='+ params.join(); + '&is_espanol=0';
+	        }
+	        
         } else {
-            var ids = 'all';
+            var pathArray = window.location.pathname.split( '/' );
+
+	        if (pathArray[1] == 'es'){
+	            url = 'http://www.historyofvaccines.org/timeline.php?category_ids=all&is_espanol=1';
+	        } else {
+	            url = 'http://www.historyofvaccines.org/timeline.php?category_ids=all&is_espanol=0';
+	        }
         }
-        
-        if(ids == 'All') {
-	        ids = 'all';
-        }
-        
-        var pathArray = window.location.pathname.split( '/' );
-        if (pathArray[1] == 'es'){
-            var url = 'http://www.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=1';
-        } else {
-            var url = 'http://www.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=0';
-        }
-        console.log(url);
         $.ajax({
             url: url,
             success: function(data) {
-	            data = JSON.parse(data);
+	            data = JSON.parse( data );
                 var append = 0;
                 var append_to = 0;
 
@@ -433,7 +472,7 @@
       <div class="modal-body">
       	
       	<div style="cursor:pointer;" class="pull-right" data-dismiss="modal">
-      		<span class="glyphicon glyphicon-remove"></span>
+      		<span class="glyphicon glyphicon-remove" style="z-index:10;"></span>
       	</div>
       	
       	<div class="row">
