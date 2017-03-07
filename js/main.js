@@ -1,4 +1,6 @@
 (function ($) {
+
+    var isStaging = true;
 	
 	$(".article .body a").each(function(){
 		
@@ -320,7 +322,11 @@
 		console.log(caption, creator);
 		
 		if(uniqueID) {
-			var path = "http://www.historyofvaccines.org/timeline#EVT_" + uniqueID;
+            if(isStaging){
+                var path = "http://staging.historyofvaccines.org/timeline#EVT_" + uniqueID;
+            } else {
+                var path = "http://www.historyofvaccines.org/timeline#EVT_" + uniqueID;
+            }
 			window.history.pushState("object or string", "Title", path);	
 		}
 		
