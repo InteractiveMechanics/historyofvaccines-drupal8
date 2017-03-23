@@ -141,6 +141,9 @@
 	
 		<div class="col-md-9">
 			
+                        
+                        
+                        
 			<div class="gallery-item">
                 <a href="{{ base_path }}/gallery" class="back-to-results">&laquo; Back to results</a>
 				<h1>{{ node.title.value }}</h1>
@@ -151,14 +154,14 @@
                             class="show-modal" 
                             data-filename="{{ orig_filename }}"
                             >+</div>
-                        <img src="http://media.historyofvaccines.org/images/{{ orig_filename }}_540.jpg" alt="{{ node.title[0].value }}" />
+                        <img src="https://media.historyofvaccines.org/images/{{ orig_filename }}_540.jpg" alt="{{ node.title[0].value }}" />
                     </div>
                 {% elseif content.field_taxonomy.0['#url'].routeParameters['taxonomy_term'] == 37 %}
                     {% if orig_filename ends with '.m4v' %}
-                        {% set ext = 'http://media.historyofvaccines.org/m4v/' %}
+                        {% set ext = 'https://media.historyofvaccines.org/m4v/' %}
                         <video src="{{ ext }}{{ orig_filename }}" controls="controls" autoplay="true" width="100%"></video>
                     {% else %}
-                        {% set ext = 'http://media.historyofvaccines.org/mobile/video/320/' %}
+                        {% set ext = 'https://media.historyofvaccines.org/mobile/video/320/' %}
                         <video src="{{ ext }}{{ orig_filename }}.mp4" controls="controls" autoplay="true" width="100%"></video>
                     {% endif %}
                 {% endif %}
@@ -186,10 +189,11 @@
                     {% endif %}
                     {% if node.field_timeline_categories[0] %}
                         <dt>Timeline Category:</dt>
-                        {% for key, content in content.field_timeline_categories if key|first != '#' %}
-                            <dd><a href="{{ content['#node'].uri }}">{{ content['#node'].title.value|raw }}</a></dd>
-                        {% endfor %}
-                    {% endif %}
+						{% for key, value in content.field_timeline_categories %}
+						   {% if key > 0 %}
+						         <dd>{{ value }}</dd>
+						   {% endif %}
+						{% endfor %}                    {% endif %}
                     {% if node.field_source[0].value %}
                         <dt>Source:</dt>
                         <dd>{{ node.field_source[0].value|raw }}</dd>
