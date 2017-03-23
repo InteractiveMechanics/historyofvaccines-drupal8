@@ -71,7 +71,7 @@
 <script id="item-template" type="text/x-handlebars-template">
     <div style="width:220px; !important;">
         <div class="year">{{year}}</div>
-        <div class="timeline-entry" data-caption="{{#each caption}}{{this}}|,|{{/each}}" data-creator="{{#each creator}}{{this}}|,|{{/each}}" id="{{id}}" data-datestr="{{datestr}}" data-year="{{year}}" data-uniqueid="{{id}}" data-title="{{title}}" data-body='{{description}}' data-filename="{{#each filename}}{{this}}|,|{{/each}}" data-filetype="{{#each filetype}}{{this}}|,|{{/each}}" data-toggle="modal" data-target="#myModal">
+        <div class="timeline-entry" data-caption="{{#each caption}}{{this}}|,|{{/each}}" data-copyright="{{#each copyright}}{{this}}|,|{{/each}}" data-creator="{{#each creator}}{{this}}|,|{{/each}}" id="{{id}}" data-datestr="{{datestr}}" data-year="{{year}}" data-uniqueid="{{id}}" data-title="{{title}}" data-body='{{description}}' data-filename="{{#each filename}}{{this}}|,|{{/each}}" data-filetype="{{#each filetype}}{{this}}|,|{{/each}}" data-toggle="modal" data-target="#myModal">
 				{{#isVideo filename.[0]}}{{/isVideo}}
 				
 			<div class="title">{{title}}</div>
@@ -140,7 +140,7 @@
 				                    	{% endif %}
 				                    	
 										<img style="float:left; margin-right:15px; margin-bottom:5px;" 
-										src="http://media.historyofvaccines.org/images/{{ orig_filename }}_265.jpg" width="70">
+										src="https://media.historyofvaccines.org/images/{{ orig_filename }}_265.jpg" width="70">
 										{{highlight.body.value|raw}}
 									</p>
 									
@@ -157,6 +157,8 @@
 </div>
 
 <script type="text/javascript">
+        var isStaging = true;
+
         var allCheckbox = $('#views-exposed-form-timeline-page-1 .form-select:eq(0)');
         $('#views-exposed-form-timeline-page-1 .form-select:eq(0)').parent().html(allCheckbox).append('<b>All</b>');
         
@@ -203,7 +205,11 @@
 		});
 		
 		function filterTimeline() {
-			var path = "http://www.historyofvaccines.org/timeline";
+            if(isStaging){
+			    var path = "http://staging.historyofvaccines.org/timeline";
+            } else {
+                var path = "https://www.historyofvaccines.org/timeline";
+            }
 			var filters = document.getElementsByName('timeline_categories');
 			
 			if(filters[0].checked) {
@@ -237,7 +243,7 @@
         }
 		Handlebars.registerHelper('isVideo', function(filename) {
             if (filename) {
-    			var imgURL = "http://media.historyofvaccines.org/images/"+ filename + "_90.jpg"
+    			var imgURL = "https://media.historyofvaccines.org/images/"+ filename + "_90.jpg"
     			if ( filename.indexOf('m4v') == -1 && filename != "") {
     				return "<div class='image'>" +
     							"<img src='"+ imgURL +"' />" +
@@ -266,9 +272,17 @@
         
         var pathArray = window.location.pathname.split( '/' );
         if (pathArray[1] == 'es'){
-            var url = 'http://www.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=1';
+            if(isStaging) {
+                var url = 'http://staging.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=1';
+            } else {
+                var url = 'http://www.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=1';
+            }
         } else {
-            var url = 'http://www.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=0';
+            if(isStaging) {
+                var url = 'http://staging.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=0';
+            } else {
+                var url = 'http://www.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=0';
+            }
         }
         //console.log(url);
         $.ajax({
@@ -293,6 +307,7 @@
                         timelineData[append_to].filetype.push(d[i].filetype);
                         timelineData[append_to].creator.push(d[i].field_creator);
                         timelineData[append_to].caption.push(d[i].field_caption);
+                        timelineData[append_to].copyright.push(d[i].field_copyright);
         			} else {
                         if (d[i].year) {
 	                        
@@ -316,6 +331,7 @@
                                     filebody: [d[i].filebody],
                                     creator: [d[i].field_creator],
                                     caption: [d[i].field_caption],
+                                    copyright: [d[i].field_copyright],
             						category: d[i].category,
             						description: d[i].description,
             						datestr: d[i].year,

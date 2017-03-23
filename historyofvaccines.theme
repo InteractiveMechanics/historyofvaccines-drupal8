@@ -319,7 +319,7 @@
 		if($node->field_uid) {
 			
 			$uid = $node->field_uid->getValue()[0]['value'];
-			$link = "http://www.historyofvaccines.org/timeline#EVT_" . $uid;
+			$link = "https://www.historyofvaccines.org/timeline#EVT_" . $uid;
 			$variables['url'] = $link;
 			
 		}
