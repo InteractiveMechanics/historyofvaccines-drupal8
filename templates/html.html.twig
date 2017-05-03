@@ -39,7 +39,10 @@
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="{{ language.id }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="alternate" href="https://www.historyofvaccines.org/{{ language.id }}" hreflang="{{ language.id }}" />
 
     <head-placeholder token="{{ placeholder_token|raw }}">
     {% set hmtlTitle = node_type %}
