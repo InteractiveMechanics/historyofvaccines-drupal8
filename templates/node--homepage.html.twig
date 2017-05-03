@@ -80,7 +80,7 @@
 		<p>
 			{{node.field_about_text[0].value|raw}}
 		</p>
-		<a href="{{base_path}}about" class="view-more inverse">
+		<a href="{{ base_path }}{{ language.id }}/node/1012" class="view-more inverse">
             {% if language.id == 'ar' %}مزيد{% endif %}
             {% if language.id == 'ur' %}زیادہ{% endif %}
             {% if language.id == 'hi' %}अधिक{% endif %}
@@ -88,7 +88,7 @@
 	</div>
 	
 	<div class="small-block pull-right hidden-sm hidden-xs">
-		<a href="{{base_path}}timeline"><img src="/themes/historyofvaccines/images/homepage/TIMELINE.jpg" class="img-responsive" width="100%" /></a>
+		<a href="{{base_path}}{{ language.id }}/timeline"><img src="/themes/historyofvaccines/images/homepage/TIMELINE.jpg" class="img-responsive" width="100%" /></a>
 	</div>
 </div>
 <br style="clear:both;" class="hidden-sm hidden-xs" />

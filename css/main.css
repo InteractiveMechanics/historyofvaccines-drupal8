@@ -1582,6 +1582,8 @@ ul.recent-posts li {
           color: white; }
         #activity-slideshow .activity-slideshow-container .slide .slide-content p {
           color: white; }
+        #activity-slideshow .activity-slideshow-container .slide .slide-content img[data-align="right"] {
+          float: right; }
   #activity-slideshow .activity-slideshow-controls {
     position: absolute;
     bottom: 20px;

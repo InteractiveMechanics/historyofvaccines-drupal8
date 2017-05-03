@@ -217,13 +217,14 @@
     }
 
 	function historyofvaccines_preprocess_search_result(&$variables) {
+		$lang = \Drupal::languageManager()->getCurrentLanguage()->getId();
 		
 		$node = $variables['result']['node'];
 		
 		if($node->field_uid) {
 			
 			$uid = $node->field_uid->getValue()[0]['value'];
-			$link = "http://ml.historyofvaccines.org/timeline#EVT_" . $uid;
+			$link = "http://ml.historyofvaccines.org/$lang/timeline#EVT_" . $uid;
 			$variables['url'] = $link;
 			
 		}

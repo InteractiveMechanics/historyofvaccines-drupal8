@@ -157,9 +157,11 @@
 		
 		$(document).ready(function(){
 			var _title = encodeURIComponent(document.title);
+            var _description =  encodeURIComponent("{% if language.id == 'ar' %}زوروا تاريخ التطعيمات مورد و مرجع تعليمي لجمعية الأطباء في فيلادلفيا{% endif %}{% if language.id == 'ur' %}ویکسینز کی تاریخ، فلاڈیلفیا کے کالج آف فزیشنز کی طرف سے ایک تعلیمی وسائل ملاحظہ کریں{% endif %}{% if language.id == 'hi' %}टीके का इतिहास एक शिक्षा संसाधन फिलाडेल्फिया के चिकित्सकों के कॉलेज द्वारा, एक शिक्षा संसाधन पर जाएं।{% endif %}");
+            var _pic = encodeURIComponent("https://media.historyofvaccines.org/images/000634_540.jpg");
 			
 			$('.facebook').click(function() {
-				var fb = "https://www.facebook.com/dialog/share?app_id=140586622674265&display=popup&href=" + window.location.href + "&picture=&title="+ _title; /* + "&redirect_uri=" + window.location.href;*/
+				var fb = "https://www.facebook.com/dialog/share?app_id=140586622674265&display=popup&href=" + window.location.href + "&description=" + _description + "&picture=" + _pic + "&title="+ _title; /* + "&redirect_uri=" + window.location.href;*/
 				win = window.open(fb, '_blank');
 		    });
 		    

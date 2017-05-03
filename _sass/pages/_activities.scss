@@ -172,6 +172,9 @@
                 p {
                     color: white;
                 }
+                img[data-align="right"] {
+                    float: right;
+                }
             }
         }
     }
