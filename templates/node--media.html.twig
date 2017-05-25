@@ -191,7 +191,9 @@
                         <dt>Timeline Category:</dt>
 						{% for key, value in content.field_timeline_categories %}
 						   {% if key > 0 %}
-						         <dd>{{ value }}</dd>
+						   {% if value is not empty %}
+						         	{{ value }}
+						         {% endif %}
 						   {% endif %}
 						{% endfor %}                    {% endif %}
                     {% if node.field_source[0].value %}

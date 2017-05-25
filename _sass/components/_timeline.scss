@@ -119,6 +119,8 @@
 
 .timeline-modal-body {
 	font-size:12px;
+    max-height: 300px;
+    overflow: auto;
 }
 
 .timeline-dialog {

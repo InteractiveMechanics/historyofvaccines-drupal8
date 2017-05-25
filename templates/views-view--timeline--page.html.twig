@@ -71,7 +71,7 @@
 <script id="item-template" type="text/x-handlebars-template">
     <div style="width:220px; !important;">
         <div class="year">{{year}}</div>
-        <div class="timeline-entry" data-caption="{{#each caption}}{{this}}|,|{{/each}}" data-copyright="{{#each copyright}}{{this}}|,|{{/each}}" data-creator="{{#each creator}}{{this}}|,|{{/each}}" id="{{id}}" data-datestr="{{datestr}}" data-year="{{year}}" data-uniqueid="{{id}}" data-title="{{title}}" data-body='{{description}}' data-filename="{{#each filename}}{{this}}|,|{{/each}}" data-filetype="{{#each filetype}}{{this}}|,|{{/each}}" data-toggle="modal" data-target="#myModal">
+        <div class="timeline-entry" data-caption="{{#each caption}}{{this}}|,|{{/each}}" data-copyright="{{#each copyright}}{{this}}|,|{{/each}}" data-creator="{{#each creator}}{{this}}|,|{{/each}}" id="{{id}}" data-datestr="{{datestr}}" data-nid="{{nid}}" data-year="{{year}}" data-uniqueid="{{id}}" data-title="{{title}}" data-body='{{description}}' data-filename="{{#each filename}}{{this}}|,|{{/each}}" data-filetype="{{#each filetype}}{{this}}|,|{{/each}}" data-toggle="modal" data-target="#myModal">
 				{{#isVideo filename.[0]}}{{/isVideo}}
 				
 			<div class="title">{{title}}</div>
@@ -111,8 +111,9 @@
 							
 							<li>
 								<div class="sidebar-blurb">
+
 									<p class="title" style="color: #369; font-size: 13px; font-weight: bold;">
-										{{highlight.title.value}}
+										<a href="javascript: void(0);" onclick="showTimelineItem({{highlight.field_related_timeline_entries.entity.field_uid.value}})">{{highlight.title.value}}</a>
 									</p>
 									
 									
@@ -185,7 +186,7 @@
 			for(var i = 0; i < filters.length; ++i)
 			{
 			    if(filters[i].checked) {
-				    console.log(filters[i]);
+				    //console.log(filters[i]);
 			    }
 			}
         });
@@ -319,7 +320,7 @@
                         if (d[i].year) {
 	                        
 	                        var dateStr = d[i].year;
-	                        console.log(d[i].year);
+	                        //console.log(d[i].year);
 	                        var year = '';
 	                        if(dateStr.indexOf('/') == -1) {
 		                        year = dateStr;
@@ -342,7 +343,8 @@
             						category: d[i].category,
             						description: d[i].description,
             						datestr: d[i].year,
-            						start: d[i].year
+            						start: d[i].year,
+                                    nid: d[i].nid
             					}
             				);
                         }
@@ -429,7 +431,7 @@
 	        	}, 300);
 	        	
 	        	
-	        	console.log($('#visualization-timeline .slider'));
+	        	//console.log($('#visualization-timeline .slider'));
 	        	
                 slider = $('#visualization-timeline .slider').slider({
                     value: (Date.parse( timelineData[0].year ) - 365000000000),
@@ -470,6 +472,11 @@
                 console.log('Failed to load timeline data');
             }
         });
+        
+        function showTimelineItem(eventLocationID) {
+			timeline.setSelection(eventLocationID, {focus: true});
+			$("#" + eventLocationID).click();
+        }
 </script>
 
 <!-- Modal -->
@@ -491,6 +498,9 @@
 			</div>
         
 			<div class="col-md-7 timeline-modal-right">
+                {% if is_admin %}
+                    <a href="" class="btn timeline-modal-edit-button">Edit</a>
+                {% endif %}
 				<p class="timeline-modal-date"></p>
 				<p class="timeline-modal-title"></p>
 				<p class="timeline-modal-body"></p>
