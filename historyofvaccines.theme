@@ -160,7 +160,7 @@
 				$arr = \Drupal\node\Entity\Node::loadMultiple($nids);
 				$variables['timeline_overview_highlight'] = $arr;
 			} else {
-				$query = \Drupal::entityQuery('node')->condition('type', 'timeline_overview')->condition('nid', 691);    
+				$query = \Drupal::entityQuery('node')->condition('type', 'timeline_overview')->condition('nid', 691);
 				$nids = $query->execute();
 				$nodeItem = \Drupal\node\Entity\Node::load(691);
 				$temp = $nodeItem->body->getValue();
@@ -306,6 +306,10 @@
 		
 		$primarylinksmenu = \Drupal\block\Entity\Block::load('primarylinks');
 		$variables['primarylinksmenu'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($primarylinksmenu);
+
+        $current_user = \Drupal::currentUser();
+        $roles = $current_user->getRoles();
+        $variables['is_admin'] = in_array('administrator', $roles);
 		
 		$langswitcher = \Drupal\block\Entity\Block::load('languageswitcher');
         $variables['languageswitcher'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($langswitcher);

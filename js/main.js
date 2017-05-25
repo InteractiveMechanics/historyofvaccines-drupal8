@@ -8,7 +8,7 @@
 		
 		if(url) {
 			
-			if(url && url.indexOf('historyofvaccines') != -1 && url.indexOf("#") != -1) {
+			if(url && url.indexOf('historyofvaccines') != -1 && url.indexOf("#") != -1 && url.indexOf('/timeline') == -1) {
 				var hash =  url.split("#")[1];	
 				$(this).attr('href', '#'+hash);
 			}	
@@ -209,7 +209,11 @@
     }
     
     function fixTitle(title) {
+        if (title){
 	        return title.replace("&#039;", "'");
+        } else {
+            return '';
+        }
     }
     function populateMediaInfo(root) {    
 	    console.log(data[root]);
@@ -354,6 +358,8 @@
 		$('.timeline-modal-date').html($invoker.data('datestr'));
 		$('.timeline-modal-title').html($invoker.data('title'));
 		$('.timeline-modal-body').html($invoker.data('body'));
+        $('.timeline-modal-edit-button').attr('href', '/node/' + $invoker.data('nid') + '/edit/');
+
 		
 		if(file_arr.length == 0) {
 			$('.timeline-modal-image').html("");
@@ -454,17 +460,17 @@
         var creator = '';
         var caption = '';
         var copyright = '';
-
-        if (creator_arr[0]){
-            creator = '<span>' + creator_arr[0] + '</span> ';
-        }
         
         if (caption_arr[0]){
     	    caption = "<b> " + caption_arr[0] + "</b>";
         }
         
         if (copyright_arr[0]){
-    	    copyright = "<br /><span>Copyright Holder: </span><em>" + copyright_arr[0] + "</em>";
+    	    copyright = "<br /><span>" + copyright_arr[0] + "</span> ";
+        }
+
+        if (copyright == ""){
+            copyright = '<br /><span>' + creator_arr[0] + '</span> ';
         }
         
         htmlString += "<p style='text-align:left; font-size: 11px; margin: 5px 0px; line-height: 16px; color: #999;' class='caption-area'>" + creator + ' ' + caption + copyright + "</p>";
@@ -474,15 +480,21 @@
 	        var file = file_arr[i];
 	        var filetype = filetype_arr[i];
 	        
-            var creator;
-            var caption;
-
-            if (creator_arr[i]){
-	            creator = '<span>' + creator_arr[i] + '</span>';
-            }
-            if (caption_arr[i]){
-	            caption = "<b>" + caption_arr[i] + "</b>";
-            }
+            var creator = '';
+	        var caption = '';
+	        var copyright = '';
+	        
+	        if (caption_arr[i]){
+	    	    caption = "<b> " + caption_arr[i] + "</b>";
+	        }
+	        
+	        if (copyright_arr[i]){
+	    	    copyright = "<br /><span>" + copyright_arr[i] + "</span> ";
+	        }
+	
+	        if (copyright == ""){
+	            copyright = '<br /><span>' + creator_arr[i] + '</span> ';
+	        }
 	        
 	        if(file != "") {
 		    
@@ -493,7 +505,7 @@
 				}
 				
 	        	
-				htmlString += '<div class="body-mediaitem-small body-mediaitem-small-timeline '+ file +'" data-filename="'+file+'" data-type="'+ type +'" data-caption="'+ creator + ' <br /> ' + caption +'">';
+				htmlString += '<div class="body-mediaitem-small body-mediaitem-small-timeline '+ file +'" data-filename="'+file+'" data-type="'+ type +'" data-caption="'+ caption + copyright +'">';
 					if(type == 'image') {
 			        	var filename = "https://media.historyofvaccines.org/images/" + file + "_265.jpg";
 			        	htmlString += '<img src="'+ filename +'" alt="' + caption_arr[i] + '">';	

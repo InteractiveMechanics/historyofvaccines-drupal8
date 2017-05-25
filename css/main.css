@@ -699,7 +699,9 @@ button.collapsed span.glyphicon-menu-hamburger {
   margin-bottom: 10px; }
 
 .timeline-modal-body {
-  font-size: 12px; }
+  font-size: 12px;
+  max-height: 300px;
+  overflow: auto; }
 
 .timeline-dialog {
   width: 800px; }
