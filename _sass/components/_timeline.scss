@@ -119,8 +119,16 @@
 
 .timeline-modal-body {
 	font-size:12px;
-    max-height: 300px;
+    max-height: 350px;
     overflow: auto;
+
+    blockquote {
+        font-size: 12px;
+    }
+}
+
+.vis-tooltip {
+    display: none !important;
 }
 
 .timeline-dialog {

@@ -34,6 +34,47 @@
 	padding: 10px 40px 20px;
 }
 
+#language-switcher {
+    height: 50px;
+    background: transparent;
+    border: none;
+    border-left: 1px solid rgba(255,255,255,0.25);
+    color: white;
+    border-radius: 0;
+    padding: 0 20px 0;
+    
+    @include screen-xs  {
+    	height: 25px;
+    }
+
+    &:hover, &:focus, &:active {
+        background: #555;
+    }
+
+    & + .dropdown-menu {
+        background: #606c67;
+        border-radius: 0;
+        margin-top: -1px;
+         left: auto;
+		 right: 0;
+
+
+        li {
+            &.is-active {
+                background: #555;
+            }
+
+            a {
+                color: white;
+                padding: 8px 20px;
+
+                &:hover, &:focus, &:active {
+                    background: #555;
+                }
+            }
+        }
+    }
+}
 #navbar {
     padding: 0;
 }
