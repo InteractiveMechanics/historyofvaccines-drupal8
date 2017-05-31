@@ -125,7 +125,6 @@
 				
 				
 				<div class="body">
-				
 				<div class="body-mediaitem">
 					{% set first_item_done = false %}
 					{% if content.field_related_media[0] %}
@@ -188,13 +187,17 @@
 							{% if content.field_related_media[0] %}
 							
 								<p style='line-height: 15px; margin-top: 15px; font-size: 13px;'><small>
-									{{ content.field_related_media[0]['#node'].field_caption.value }}<br />
-									
-									{% if content.field_related_media[0]['#node'].field_copyright.entity.title.value == content.field_related_media[0]['#node'].field_caption.value %}
-										<strong>{{ content.field_related_media[0]['#node'].field_copyright.entity.title.value|raw }}</strong>  <br />
+									<strong>{{ content.field_related_media[0]['#node'].field_caption.value }}</strong><br />
+
+                                    {% set mediatitle = content.field_related_media[0]['#node'].getTitle() %}
+                                    {% set copyright = content.field_related_media[0]['#node'].field_copyright.entity.getTitle() %}
+                                    {% set creator = content.field_related_media[0]['#node'].field_creator.entity.getTitle() %}
+
+									{% if copyright != mediatitle %}
+										<em>{{ copyright }}</em>
 									{% else %}
-										{% if content.field_related_media[0]['#node'].field_creator.entity.title.value %}
-											{{ content.field_related_media[0]['#node'].field_creator.entity.title.value|raw }}
+										{% if creator != mediatitle %}
+											<em>{{ creator }}</em>
 										{% endif %}
 									{% endif %}
 		                            
@@ -228,25 +231,34 @@
 		                                {% elseif thumb_file|length == 5 %}
 		                                    {% set thumb_file = '0' ~ thumb_file %}
 		                            	{% endif %}
-		                    			
-		                    		
+
+                                        {% set mediatitle = content.field_related_media[key]['#node'].getTitle() %}
+                                        {% set copyright = content.field_related_media[key]['#node'].field_copyright.entity.getTitle() %}
+                                        {% set creator = content.field_related_media[key]['#node'].field_creator.entity.getTitle() %}
+    
+    									
 			                    		{% if content.field_related_media[key]['#node'].field_taxonomy.target_id != 37 %}
-			                    		
-			                    			{% if content.field_related_media[key]['#node'].field_copyright.entity.title.value %}
-			                    				{% set text = content.field_related_media[key]['#node'].field_creator.entity.title.value|raw %}
-											{% else %}
-												{% set text = content.field_related_media[key]['#node'].field_creator.entity.title.value|raw %}
-											{% endif %}
 			                    			
 			                    			<div 
 			                    				class="body-mediaitem-small body-mediaitem-small-article" 
 			                    				data-filename="{{ thumb_file }}" 
 			                    				data-type="image" 
-			                    				data-caption="{{ content.field_related_media[key]['#node'].field_caption.value }} <br /> {{text}}">
-															  <img 
-															  	src="https://media.historyofvaccines.org/images/{{ thumb_file }}_265.jpg" 
-															  	alt="{{ content.field_related_media[key]['#node'].title.value }}" 
-															  />
+			                    				data-caption="
+                                                    <small>
+                                                    <strong>{{ content.field_related_media[key]['#node'].field_caption.value }}</strong>
+                                                    <br />
+                                                    {% if copyright != mediatitle %}
+                										<em>{{ copyright }}</em>
+                									{% else %}
+                										{% if creator != mediatitle %}
+                											<em>{{ creator }}</em>
+                										{% endif %}
+                									{% endif %}
+                                                    </small>">
+    													  <img 
+    													  	src="https://media.historyofvaccines.org/images/{{ thumb_file }}_265.jpg" 
+    													  	alt="{{ content.field_related_media[key]['#node'].title.value }}" 
+    													  />
 											</div>
 			                    		
 			                    		{% else %}
@@ -255,9 +267,18 @@
 			                    				class="body-mediaitem-small body-mediaitem-small-article" 
 			                    				data-filename="{{ thumb_file }}" 
 			                    				data-type="video" 
-			                    				data-caption="<em>{{ content.field_related_media[key]['#node'].field_copyright.entity.title.value|raw }}</em> 
-			                    							  <br /><b>{{ content.field_related_media[key]['#node'].field_caption.value }}</b>" 
-			                    			>
+			                    				data-caption="
+                                                    <small>
+                                                    <strong>{{ content.field_related_media[key]['#node'].field_caption.value }}</strong>
+			                    					<br />
+                                                    {% if copyright != mediatitle %}
+                										<em>{{ copyright }}</em>
+                									{% else %}
+                										{% if creator != mediatitle %}
+                											<em>{{ creator }}</em>
+                										{% endif %}
+                									{% endif %}
+                                                    </small>">
 															  <img 
 															  	src="https://media.historyofvaccines.org/images/{{ thumb_file }}_265.jpg" 
 															  	alt="{{ content.field_related_media[key]['#node'].title.value }}" 
