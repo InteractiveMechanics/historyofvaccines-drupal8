@@ -316,7 +316,11 @@
 	                        //console.log(d[i].year);
 	                        var year = '';
 	                        if(dateStr.indexOf('/') == -1) {
-		                        year = dateStr;
+                                if (dateStr.indexOf(',') == -1) {
+                                    year = dateStr;
+                                } else {
+                                    year = dateStr.substr(dateStr.indexOf(",") + 1);
+                                }
 	                        } else {
 		                        year = dateStr.split('/')[2];
 	                        }
@@ -420,15 +424,13 @@
                     }
 	        	}, 300);
 	        	
-	        	
-	        	//console.log($('#visualization-timeline .slider'));
-	        	
                 slider = $('#visualization-timeline .slider').slider({
                     value: (Date.parse( timelineData[0].year ) - 365000000000),
                     min: (Date.parse( timelineData[0].year ) - 365000000000),
                     max: (Date.parse( timelineData[timelineCount-1].year )),
                     slide: function(e, ui) {
                         var newval = ui.value;
+
                         timeline.setWindow({
                             start: newval
                         });
