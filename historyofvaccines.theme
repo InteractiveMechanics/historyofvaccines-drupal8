@@ -15,6 +15,7 @@
 		        $variables['username'] = $username;
 		    }
             $variables['translations'] = $node->hasTranslation('es');
+
             
             if($nid == 2291) {
 	            //get highlight
@@ -121,7 +122,52 @@
 
 	function historyofvaccines_theme_suggestions_alter(array &$suggestions, array &$variables, $hook) {
 		
-		///$node = Drupal::routeMatch()->getParameter('node');
+		$node = Drupal::routeMatch()->getParameter('node');
+        if ($node) {
+            $body = "The History of Vaccines explores the role of immunization in the human experience and examines its continuing contributions to public health.";
+			if($node->body->value) {
+				$body = strip_tags($node->body->value);
+			}
+            $variables['meta_description'] = $body;
+
+            $url = "http://staging.historyofvaccines.org" . $_SERVER['REQUEST_URI'];
+			$title = "The History of Vaccines";
+			if($node->title[0]->value) {
+				$title = $node->title[0]->value;
+			}
+			
+			if($node->body->value) {
+				$body = strip_tags($node->body->value);
+			}
+			
+			$image = "https://www.historyofvaccines.org/sites/default/files/2017-01/Home_Feature_04.jpg";
+
+            if ( $node->field_orig_filename[0]->value ) {
+                $orig_filename = $node->field_orig_filename[0]->value;
+
+                if (strlen($orig_filename) == 1){
+            		$orig_filename = '00000' . $orig_filename;
+                }
+                if (strlen($orig_filename) == 2){
+            		$orig_filename = '0000' . $orig_filename;
+                }
+                if (strlen($orig_filename) == 3){
+            		$orig_filename = '000' . $orig_filename;
+                }
+                if (strlen($orig_filename) == 4){
+            		$orig_filename = '00' . $orig_filename;
+                }
+                if (strlen($orig_filename) == 5){
+            		$orig_filename = '0' . $orig_filename;
+                }
+                
+                $image = 'https://media.historyofvaccines.org/images/' . $orig_filename . '_540.jpg';
+            }
+
+            $variables['meta_tags'] = create_meta_tags($title, str_replace("'", "", $body), $image, $url);
+        } else {
+            $variables['meta_tags'] = '';
+        }
 		//$contentType = $node->getType();
 		
 		$view = \Drupal::request()->attributes->get('view_id');
@@ -326,5 +372,26 @@
 			
 		}
 		
+	}
+    function create_meta_tags($title, $body, $image, $url) {
+		$meta_tags = '';
+		
+		if($title) {
+			$meta_tags .= "<meta property='og:title' content='$title' />";
+		}
+		
+		if($body) {
+			$meta_tags .= "<meta name='description' content='$body'>";
+			$meta_tags .= "<meta property='og:description' content='$body' />";
+		}
+		
+		if($image) {
+			$meta_tags .= "<meta property='og:image' content='$image' />";
+		}
+		
+		$meta_tags .= "<meta property='og:url' content='$url' />";
+		
+		
+		return $meta_tags;
 	}
 ?>

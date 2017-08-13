@@ -440,7 +440,6 @@
                     max: (Date.parse( timelineData[timelineCount-1].year )),
                     slide: function(e, ui) {
                         var newval = ui.value;
-
                         timeline.setWindow({
                             start: newval
                         });
@@ -452,6 +451,7 @@
                     var interval = range.end - range.start;
         
                     slider.slider('value', range.start.valueOf() - interval * 1.15);
+                    
         
                     timeline.setWindow({
                         start: range.start.valueOf() - interval * 1.15,
@@ -463,7 +463,8 @@
                     var interval = range.end - range.start;
         
                     slider.slider('value', range.start.valueOf() - interval * -1.15);
-            
+					
+					
                     timeline.setWindow({
                         start: range.start.valueOf() - interval * -1.15,
                         end:   range.end.valueOf()   - interval * -1.15
