@@ -424,18 +424,23 @@
                     }
 	        	}, 300);
 	        	
+	        	
+	        	   console.log(timelineData[timelineData.length-1].year);
+	        	
+	        	var _value = timelineData[0].year - 1;
+	        	var _max = timelineData[timelineData.length-1].year;
+	        	
                 slider = $('#visualization-timeline .slider').slider({
-                    value: (Date.parse( timelineData[0].year ) - 365000000000),
-                    min: (Date.parse( timelineData[0].year ) - 365000000000),
-                    max: (Date.parse( timelineData[timelineCount-1].year )),
-                    slide: function(e, ui) {
-                        var newval = ui.value;
-
-                        timeline.setWindow({
-                            start: newval
+	                min: _value,
+				    max: _max,
+				    value: _value,
+				    slide: function( event, ui ) {
+				    	timeline.setWindow({
+                            start: Date.parse(ui.value)
                         });
-                    }
+				    }
                 });
+	        	
                 
                 $('.moveleft').on('click', function(){
                     var range = timeline.getWindow();
