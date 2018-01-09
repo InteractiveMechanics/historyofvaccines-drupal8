@@ -74,16 +74,19 @@
             $('.filters ul li:eq(0)').addClass('active');
 
             var key = getParameterByName('keys');
-            var searchLink = window.location.origin + window.location.pathname + "?keys=" + key + "&f[0]=type:article&f[1]=type:page&f[2]=type:simulation";
+            var searchLink = window.location.origin + window.location.pathname + "?keys=" + key + "&f[0]=type:article&f[1]=type:page&f[2]=type:simulation&f[3]=type:timeline_entry";
             window.location = searchLink;
 		}
+
+        var key = getParameterByName('keys');
+        $('.search-results-title').append('<i>' + key + '</i>');
+        $('#edit-keys').attr('value', key);
 		
 		$('.filters ul li a').click(function(){
 			var filter = $(this).text();
-			var key = getParameterByName('keys');
 			
 			if(filter == 'Site') {
-				var searchLink = window.location.origin + window.location.pathname + "?keys=" + key + "&f[0]=type:article&f[1]=type:page&f[2]=type:simulation";
+				var searchLink = window.location.origin + window.location.pathname + "?keys=" + key + "&f[0]=type:article&f[1]=type:page&f[2]=type:simulation&f[3]=type:timeline_entry";
 				window.location = searchLink;
 			}
 			

@@ -130,17 +130,13 @@
 			}
             $variables['meta_description'] = $body;
 
-            $url = "http://staging.historyofvaccines.org" . $_SERVER['REQUEST_URI'];
+            $url = "https:///www.historyofvaccines.org" . $_SERVER['REQUEST_URI'];
 			$title = "The History of Vaccines";
 			if($node->title[0]->value) {
 				$title = $node->title[0]->value;
 			}
 			
-			if($node->body->value) {
-				$body = strip_tags($node->body->value);
-			}
-			
-			$image = "https://www.historyofvaccines.org/sites/default/files/2017-01/Home_Feature_04.jpg";
+			$image = "https://www.historyofvaccines.org/themes/historyofvaccinesml/images/activities/Activity_Feature_01.jpg";
 
             if ( $node->field_orig_filename[0]->value ) {
                 $orig_filename = $node->field_orig_filename[0]->value;
@@ -164,7 +160,7 @@
                 $image = 'https://media.historyofvaccines.org/images/' . $orig_filename . '_540.jpg';
             }
 
-            $variables['meta_tags'] = create_meta_tags($title, str_replace("'", "", $body), $image, $url);
+            $variables['meta_tags'] = create_meta_tags($title, str_replace("'", "&#39;", $body), $image, $url);
         } else {
             $variables['meta_tags'] = '';
         }
