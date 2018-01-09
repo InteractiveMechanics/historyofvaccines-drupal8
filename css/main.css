@@ -728,7 +728,8 @@ button.collapsed span.glyphicon-menu-hamburger {
 .timeline-modal-body {
   font-size: 12px;
   max-height: 350px;
-  overflow: auto; }
+  overflow: auto;
+  font-family: Helvetica,Arial,sans-serif; }
   .timeline-modal-body blockquote {
     font-size: 12px; }
 
