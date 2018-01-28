@@ -58,11 +58,25 @@
  * @ingroup themeable
  */
 #}
+{% if type.type.target_id == 'blog_post' %}
+    {% set post_type = 'Blog Post' %}
+{% elseif type.type.target_id == 'media' %}
+    {% set post_type = 'Media Item' %}
+{% elseif type.type.target_id == 'timeline_entry' %}
+    {% set post_type = 'Timeline Entry' %}
+{% elseif type.type.target_id == 'simulation' %}
+    {% set post_type = 'Page' %}
+{% elseif type.type.target_id == 'page' %}
+    {% set post_type = 'Page' %}
+{% elseif type.type.target_id == 'article' %}
+    {% set post_type = 'Page' %}
+{% endif %}
 
 <a href="{{ url }}"><div class="result">
 {{ title_prefix }}
 <h3{{ title_attributes }}>
-  {{ title }}
+  {{ title }} <small>{{ post_type }}</small>
 </h3>
+<p>{{ snippet }}</p>
 {{ title_suffix }}
 </div></a>

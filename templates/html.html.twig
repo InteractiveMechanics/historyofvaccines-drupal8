@@ -215,7 +215,7 @@
 			e.preventDefault();
 			e.stopPropagation();
 			if (event.keyCode == 13) {
-				var search = "?keys=" + document.getElementById('edit-keys').value + "&f[0]=type:article&f[1]=type:page&f[2]=type:simulation&f[3]=type:timeline_entry";
+				var search = "?keys=" + document.getElementById('edit-keys').value + "&f[0]=type:article&f[1]=type:page&f[2]=type:simulation&f[3]=type:timeline_entry&f[4]=type:blog_post&f[5]=type:media&f[6]=language:en";
 				var searchLink = window.location.origin + '/search/node' + search;
 				window.location = searchLink;
 			}

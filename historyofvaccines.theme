@@ -359,6 +359,7 @@
 	function historyofvaccines_preprocess_search_result(&$variables) {
 		
 		$node = $variables['result']['node'];
+        $type = $node;
 		
 		if($node->field_uid) {
 			
@@ -367,6 +368,8 @@
 			$variables['url'] = $link;
 			
 		}
+
+        $variables['type'] = $type;
 		
 	}
     function create_meta_tags($title, $body, $image, $url) {
