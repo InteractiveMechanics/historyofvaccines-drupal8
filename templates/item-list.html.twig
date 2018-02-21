@@ -20,14 +20,6 @@
  */
 #}
 <br />
-<div class="filters">
-	
-	<ul class="nav nav-tabs">
-		<li><a>Site</a></li>
-		<li><a>Blog</a></li>
-		<li><a>Media</a></li>
-	</ul>
-</div>
 <section class="page search-page" style="background:white;">
     <div class="row">
         <div class="col-md-12">
@@ -59,55 +51,3 @@
         </div>
     </div>
 </section>
-
-<script type="text/javascript">
-
-	$(document).ready(function(){
-		
-		if(window.location.href.indexOf('blog_post') > -1) {
-			$('.filters ul li:eq(1)').addClass('active');
-		} else if (window.location.href.indexOf('media') > -1) {
-			$('.filters ul li:eq(2)').addClass('active');
-		} else if (window.location.href.indexOf('article') > -1) {	
-			$('.filters ul li:eq(0)').addClass('active');
-        } else {
-            $('.filters ul li:eq(0)').addClass('active');
-
-            var key = getParameterByName('keys');
-            var searchLink = window.location.origin + window.location.pathname + "?keys=" + key + "&f[0]=type:article&f[1]=type:page&f[2]=type:simulation";
-            window.location = searchLink;
-		}
-		
-		$('.filters ul li a').click(function(){
-			var filter = $(this).text();
-			var key = getParameterByName('keys');
-			
-			if(filter == 'Site') {
-				var searchLink = window.location.origin + window.location.pathname + "?keys=" + key + "&f[0]=type:article&f[1]=type:page&f[2]=type:simulation";
-				window.location = searchLink;
-			}
-			
-			if(filter == 'Blog') { 
-				var searchLink = window.location.origin + window.location.pathname + "?keys=" + key + "&f[0]=type:blog_post&advanced-form=1";
-				window.location = searchLink;
-			}
-			
-			if(filter == 'Media') {
-				
-				var searchLink = window.location.origin + window.location.pathname + "?keys=" + key + "&f[0]=type:media&advanced-form=1";
-				window.location = searchLink;
-			}
-		});
-	});
-	
-	function getParameterByName(name, url) {
-	    if (!url) url = window.location.href;
-	    name = name.replace(/[\[\]]/g, "\\$&");
-	    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-	        results = regex.exec(url);
-	    if (!results) return null;
-	    if (!results[2]) return '';
-	    return decodeURIComponent(results[2].replace(/\+/g, " "));
-	}
-
-</script>
