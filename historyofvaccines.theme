@@ -129,16 +129,20 @@
             $body = '';
             $contentType = $node->getType();
             
-            if (isset($node->field_synopsis->value)) {
+            if (!empty($node->field_synopsis->value)) {
                 $body = str_replace("'", "&#39;", strip_tags($node->field_synopsis->value));
-                $body = truncate($body, 200);
+                $body = truncate($body, 240);
             }
-			if (isset($node->body->value)) {
+            if (!empty($node->field_about_text->value)) {
+                $body = str_replace("'", "&#39;", strip_tags($node->field_about_text->value));
+                $body = truncate($body, 240);
+            }
+			if (!empty($node->body->value)) {
                 $body = str_replace("'", "&#39;", strip_tags($node->body->value));
-				$body = truncate($body, 200);
+				$body = truncate($body, 240);
 			}
 
-            if (isset($node->field_orig_filename[0]->value)) {
+            if (!empty($node->field_orig_filename[0]->value)) {
                 $orig_filename = $node->field_orig_filename[0]->value;
 
                 if (strlen($orig_filename) == 1){
@@ -160,33 +164,45 @@
                 $image = 'https://media.historyofvaccines.org/images/' . $orig_filename . '_540.jpg';
             }
 
-            if (isset($node->field_related_media[0]->field_orig_filename[0]->value)) {
-                $orig_filename = $node->field_related_media[0]->field_orig_filename[0]->value;
+            if (!empty($node->field_related_media[0]->target_id)) {
+                $related_media_node = node_load($node->field_related_media[0]->target_id);
 
-                if (strlen($orig_filename) == 1){
-            		$orig_filename = '00000' . $orig_filename;
+                if (!empty($related_media_node)) {
+                    $orig_filename = $related_media_node->field_orig_filename[0]->value;
+
+                    if (strlen($orig_filename) == 1){
+                		$orig_filename = '00000' . $orig_filename;
+                    }
+                    if (strlen($orig_filename) == 2){
+                		$orig_filename = '0000' . $orig_filename;
+                    }
+                    if (strlen($orig_filename) == 3){
+                		$orig_filename = '000' . $orig_filename;
+                    }
+                    if (strlen($orig_filename) == 4){
+                		$orig_filename = '00' . $orig_filename;
+                    }
+                    if (strlen($orig_filename) == 5){
+                		$orig_filename = '0' . $orig_filename;
+                    }
+                    
+                    $image = 'https://media.historyofvaccines.org/images/' . $orig_filename . '_540.jpg';
                 }
-                if (strlen($orig_filename) == 2){
-            		$orig_filename = '0000' . $orig_filename;
-                }
-                if (strlen($orig_filename) == 3){
-            		$orig_filename = '000' . $orig_filename;
-                }
-                if (strlen($orig_filename) == 4){
-            		$orig_filename = '00' . $orig_filename;
-                }
-                if (strlen($orig_filename) == 5){
-            		$orig_filename = '0' . $orig_filename;
-                }
-                
-                $image = 'https://media.historyofvaccines.org/images/' . $orig_filename . '_540.jpg';
             }
 
-            if (isset($node->field_image->entity->uri)) {
+            if (!empty($node->field_body_image->entity->uri)) {
+                $image = file_create_url($node->field_body_image->entity->getFileUri());
+            }
+
+            if (!empty($node->field_featured_image->entity->uri)) {
+                $image = file_create_url($node->field_featured_image->entity->getFileUri());
+            }
+
+            if (!empty($node->field_image->entity->uri)) {
                 $image = file_create_url($node->field_image->entity->getFileUri());
             }
 
-            if (isset($node->field_thumbnail_image->entity->uri)) {
+            if (!empty($node->field_thumbnail_image->entity->uri)) {
                 $image = file_create_url($node->field_thumbnail_image->entity->getFileUri());
             }
 
@@ -239,9 +255,9 @@
 				
 			}
 
-            if ($temp[0]['value']) {
+            if (!empty($temp[0]['value'])) {
                 $body = str_replace("'", "&#39;", strip_tags($temp[0]['value']));
-				$body = truncate($body, 200);
+				$body = truncate($body, 240);
 			}
             
             $variables['meta_tags'] = create_meta_tags($body);
@@ -416,7 +432,7 @@
         $variables['type'] = $type;
 	}
 
-    function truncate($string, $length=100, $append="&hellip;") {
+    function truncate($string, $length=240, $append="&hellip;") {
         $string = trim($string);
     
         if(strlen($string) > $length) {
