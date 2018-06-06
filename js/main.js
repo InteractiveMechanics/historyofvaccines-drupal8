@@ -1,6 +1,6 @@
 (function ($) {
 
-    var isStaging = true;
+    var isStaging = false;
 	
 	$(".article .body a").each(function(){
 		
@@ -163,7 +163,7 @@
     var $openseadragon = null;
     
     $(document).on('click', '.show-modal', function(){
-        var root = $(this).attr('data-filename');
+	    var root = $(this).attr('data-filename');
         var hideBrowser = $(this).attr('data-hidebrowser');
 
         baseSetup();
@@ -216,6 +216,7 @@
         }
     }
     function populateMediaInfo(root) {    
+	    console.log(data[root]);
         var title = fixTitle(data[root].title);
         var description = data[root].description;
         var caption = data[root].caption;
@@ -347,6 +348,7 @@
         filetype_arr.pop();
         creator_arr.pop();
         caption_arr.pop();
+        copyright_arr.pop();
         //title_arr.pop();
         
        var file_arr_count = formatArray(file_arr);
