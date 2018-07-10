@@ -15,6 +15,10 @@ libraries:
   - historyofvaccines/openseadragon
   - historyofvaccines/global-styling
 
+libraries-override:
+  # Replace an entire library.
+  core/jquery: historyofvaccines/jquery-custom
+
 
 # Regions
 regions:
