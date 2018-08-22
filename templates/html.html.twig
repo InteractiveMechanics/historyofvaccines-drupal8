@@ -28,20 +28,16 @@
 
 <!DOCTYPE html>
 <html{{ html_attributes }}>
-<head>
-    <script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.4/handlebars.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vis/4.18.1/vis.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment-with-locales.min.js"></script>
-	
-	<script
-      src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
-      integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
-      crossorigin="anonymous"></script>
-	
+<head>	
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.4/handlebars.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vis/4.18.1/vis.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment-with-locales.min.js"></script>
+	<script type="text/javascript" src="//code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
 
     {{ meta_tags|raw }}
 
@@ -52,151 +48,6 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <css-placeholder token="{{ placeholder_token|raw }}">
     <js-placeholder token="{{ placeholder_token|raw }}">  
-    
-    
-    <style type='text/css'>
-    
-    .timeline-overview img {
-	    float:left;
-	    margin-right:20px;
-    }
-    
-    #views-exposed-form-timeline-page-1 div.checkbox.child {margin-left:20px;}
-    
-    .timeline-modal-image #body-mediaitem-switcher {
-	    margin-top:10px;
-    }
-
-
-.modal-popup {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: rgba(0,0,0,.8);
-  z-index: 99999;
-  opacity:0;
-  -webkit-transition: opacity 400ms ease-in;
-  -moz-transition: opacity 400ms ease-in;
-  transition: opacity 400ms ease-in;
-  pointer-events: none;
-}
-
-
-.modal-popup .home-modal {
-  width: 400px;
-    /* margin: 150px auto 0; */
-    background: white;
-    padding: 25px 25px 40px;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    margin: 0 auto;
-    right: 0;
-    left: 0;
-    color:#454545;
-}
-
-.modal-popup .home-modal p {
-  font-size: 16px;
-  line-height: 25px;
-  color:#454545;
-}
-
-.modal-popup .btn-outline {
-  border-color: #303A49;
-  color:#303A49;
-}
-
-.modal-popup .btn-outline:hover {
-  border-color: #303A49;
-  color:#FFF;
-  background: #303A49;
-  font-weight: bold;
-}
-
-.modal-popup .btn-escape {
-	display: inline-block;
-    padding: 6px 18px;
-    border-width: 3px;
-    color: #26A862;
-    border-color: #26A862;
-    font-size: 18px;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-.modal-popup .btn-escape:hover {
-	border: 3px solid #fff;
-	background: #26A862;
-	color:#FFF;
-}
-
-.modal-popup:target {
-  opacity:1;
-  pointer-events: auto;
-}
-
-.modal-popup .close {
-  float: right;
-  margin-right: -40px;
-  margin-top: -40px;
-  background: white;
-  border-radius: 100px;
-  box-shadow: 0 0 7px rgba(0,0,0,0.6);
-  padding: 6px;
-  padding-bottom: 3px;
-}
-
-.modal-popup .close a {
-  padding: 0;
-}
-
-.modal-popup .close a img {
-  width: 12px;
-  padding: 7px 6px 5px 7px;
-}
-
-#modal-background {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 1024px;
-    height: 768px;
-    background-color: black;
-    opacity: .50;
-    -webkit-opacity: .5;
-    -moz-opacity: .5;
-    filter: alpha(opacity=50);
-    z-index: 1000;
-}
-
-#modal-content {
-	padding: 50px;
-    position: absolute;
-    width: 320px;
-    z-index: 1000;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: 0 auto;
-    height: 120px;
-    z-index: 1000;
-    display: none;
-    top: 50%;
-    transform: translateY(-50%);
-    background: white;
-    color:#454545;
-    text-align: center;
-}
-
-#modal-background.active, #modal-content.active {
-    display: block;
-}​
-    </style> 
 
 </head>
 <body {{ attributes }} class="fade-in" data-spy="scroll" data-target="#artwork-scrollspy" data-offset="200">
@@ -209,7 +60,6 @@
     <js-bottom-placeholder token="{{ placeholder_token|raw }}">
     <div id="viewer"><div id="viewer-inner"></div></div>
     
-    
     <script type="text/javascript">
     	document.getElementById("edit-keys").addEventListener("keyup", function(e) {
 			e.preventDefault();
@@ -220,29 +70,25 @@
 				window.location = searchLink;
 			}
 		});
-		
-		
-		
     </script>
     
-    
-<script type="text/javascript">
-	
-	$(document).ready(function(){
-		if( document.getElementById("mollom") !== null ) {
-			var html = $('.article-node').next('div').html();
-			$('.article-node').next('div').hide();
-			
-			$('.article-node .comments').html(html);
-		}
-        $('.blog img').each(function(index){
-            if (!$(this).attr('title') && $(this).attr('alt')){
-                $(this).attr('title', $(this).attr('alt'));
-            }
-        });
-	});
-	
-</script>
+    <script type="text/javascript">
+    	
+    	$(document).ready(function(){
+    		if( document.getElementById("mollom") !== null ) {
+    			var html = $('.article-node').next('div').html();
+    			$('.article-node').next('div').hide();
+    			
+    			$('.article-node .comments').html(html);
+    		}
+            $('.blog img').each(function(index){
+                if (!$(this).attr('title') && $(this).attr('alt')){
+                    $(this).attr('title', $(this).attr('alt'));
+                }
+            });
+    	});
+    	
+    </script>
     
     <!-- Go to www.addthis.com/dashboard to customize your tools -->
 	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5755a6c926eeffb8"></script>
@@ -266,19 +112,15 @@
 	<a href="#open-modal" id="MobileActivityLink" style="display:none;">On Mobile</a>
 	
 	<div id="open-modal" class="modal-popup">
-                <div>
-                    <div class="home-modal">
-                        <div style="text-align:center; color:#454545 !important;">
-                            <p>
-                                This activity is best viewed on larger screens.
-                            </p>
-                            <a class="btn btn-outline btn-escape btn-back-home" href="#close">
-                            Dismiss
-                            </a>
-                        </div>
-                    </div>
+        <div>
+            <div class="home-modal">
+                <div style="text-align:center; color:#454545 !important;">
+                    <p>This activity is best viewed on larger screens.</p>
+                    <a class="btn btn-outline btn-escape btn-back-home" href="#close">Dismiss</a>
                 </div>
             </div>
+        </div>
+    </div>
             
 </body>
 </html>
