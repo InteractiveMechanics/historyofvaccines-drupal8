@@ -436,7 +436,7 @@
             						datestr: d[i].year,
             						start: d[i].year,
                                     nid: d[i].nid,
-                                    segment: round(year, 50, 50)
+                                    segment: round(year, 25, 25)
             					}
             				);
                         }
@@ -484,6 +484,32 @@
         		// Create a Timeline
                 timelineCount = timelineData.length;
                 container.innerHTML = html;
+
+
+                $('.vis-segment').each(function() {
+                    var count = $(this).find('.vis-segment-item').length;
+                    var width;
+
+                    if (count == 1) {
+                        width = 260;
+                    }
+                    if (count == 2) {
+                        width = 260 + 40;
+                    }
+                    if (count > 3) {
+                        width = (260 * Math.ceil(count / 3));
+
+                        if (count % 3 == 2) {
+                            width += 40;
+                        }
+                        if (count % 3 == 0) {
+                            width += 80;
+                        }
+                        width += ((count / 3) * 20);
+                    }
+
+                    $(this).css('width', width + 'px');
+                });
 
 
                 function getTimelineWidth() {

@@ -487,10 +487,13 @@
 }
 .vis-segment-item-wrapper {
     position: relative;
-    height: 490px;
+    height: 360px;
     display: flex;
     margin-left: 20px;
-    align-items: flex-end;
+    margin-top: 50px;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: start;
 
     &:after {
         content: "";
@@ -502,4 +505,20 @@
     width: 240px !important;
     padding: 10px;
     position: relative;
+
+    &:nth-child(3n + 1) {
+        margin-left: -40px;
+    }
+    &:nth-child(3n + 3) {
+        margin-left: 40px;
+    }
+    &:nth-child(1) {
+        margin-left: 0;
+    }
+    &:nth-child(2) {
+        margin-left: 40px;
+    }
+    &:nth-child(3) {
+        margin-left: 80px;
+    }
 }
