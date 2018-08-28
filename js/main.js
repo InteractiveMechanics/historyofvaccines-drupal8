@@ -360,6 +360,12 @@
 		$('.timeline-modal-body').html($invoker.data('body'));
         $('.timeline-modal-edit-button').attr('href', '/node/' + $invoker.data('nid') + '/edit/');
 
+        ga('send', {
+            hitType: 'event',
+            eventCategory: 'Timeline',
+            eventAction: 'open',
+            eventLabel: $invoker.data('title')
+        });
 		
 		if(file_arr.length == 0) {
 			$('.timeline-modal-image').html("");
