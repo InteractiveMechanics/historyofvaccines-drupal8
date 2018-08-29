@@ -888,6 +888,9 @@ button.collapsed span.glyphicon-menu-hamburger {
   float: left;
   margin-right: 20px; }
 
+#views-exposed-form-timeline-page-1 details {
+  display: none; }
+
 #views-exposed-form-timeline-page-1 div.checkbox.child {
   margin-left: 20px; }
 
@@ -1017,7 +1020,16 @@ button.collapsed span.glyphicon-menu-hamburger {
   overflow-x: scroll;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  white-space: nowrap; }
+  white-space: nowrap;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  -ms-overflow-style: none; }
+  .vis-timeline::-webkit-scrollbar {
+    width: 0px;
+    /* remove scrollbar space */
+    background: transparent;
+    /* optional: just make scrollbar invisible */ }
+  .vis-timeline::-webkit-scrollbar-thumb {
+    background: transparent; }
 
 .vis-segment {
   display: inline-block;

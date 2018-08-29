@@ -320,6 +320,9 @@
     margin-right:20px;
 }
 
+#views-exposed-form-timeline-page-1 details {
+    display: none;
+}
 #views-exposed-form-timeline-page-1 div.checkbox.child {margin-left:20px;}
 
 .timeline-modal-image #body-mediaitem-switcher {
@@ -467,6 +470,17 @@
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     white-space: nowrap;
+
+    &::-webkit-scrollbar {
+        width: 0px;  /* remove scrollbar space */
+        background: transparent;  /* optional: just make scrollbar invisible */
+    }
+    &::-webkit-scrollbar-thumb {
+        background: transparent;
+    }
+
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    -ms-overflow-style: none;
 }
 .vis-segment {
     display: inline-block;
