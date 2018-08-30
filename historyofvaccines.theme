@@ -1,6 +1,4 @@
 <?php
-	
-	
 	function historyofvaccines_theme_suggestions_node_alter(array &$suggestions, array &$variables)  {
 		
 		$node = \Drupal::routeMatch()->getParameter('node');
@@ -12,24 +10,24 @@
 		    $user = \Drupal\user\Entity\User::load($uid);
 		    $contentType = $node->getType();
 		    
+            // Setup current username for author information
 		    if (!is_null($user)) {
 		        $username = $user->getDisplayName();
 		        $variables['username'] = $username;
 		    }
+
+            // Check to see what translation we're set to
             $variables['translations'] = $node->hasTranslation('es');
 
-            
+            // Setup the assessment questions page
             if($nid == 2291) {
-	            //get highlight
 				$query = \Drupal::entityQuery('node')->condition('type', 'assessment_question');    
 				$nids = $query->execute();
-				
 				
 				$arr = \Drupal\node\Entity\Node::loadMultiple($nids);
 				
 				$variables['assessments'] = $arr;
             }
-        
 			
 	        if($contentType == 'espanol_page') {
 				$spanish_pages = \Drupal\block\Entity\Block::load('views_block__spanish_pages_block_1');
@@ -118,29 +116,33 @@
 				$exposed_gallery_block = \Drupal\block\Entity\Block::load('exposedformgallerygallery');
 				$variables['exposed_form_gallery'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($exposed_gallery_block);
 			}
-		
 		}
 	}
 
 	function historyofvaccines_theme_suggestions_alter(array &$suggestions, array &$variables, $hook) {
 		
-		$node = Drupal::routeMatch()->getParameter('node');
+        $view = \Drupal::request()->attributes->get('view_id');
+		$node = \Drupal::routeMatch()->getParameter('node');
+
         if ($node) {
-            $body = "The History of Vaccines explores the role of immunization in the human experience and examines its continuing contributions to public health.";
-			if($node->body->value) {
-				$body = strip_tags($node->body->value);
+            $image = '';
+            $body = '';
+            $contentType = $node->getType();
+            
+            if (!empty($node->field_synopsis->value)) {
+                $body = str_replace("'", "&#39;", strip_tags($node->field_synopsis->value));
+                $body = truncate($body, 240);
+            }
+            if (!empty($node->field_about_text->value)) {
+                $body = str_replace("'", "&#39;", strip_tags($node->field_about_text->value));
+                $body = truncate($body, 240);
+            }
+			if (!empty($node->body->value)) {
+                $body = str_replace("'", "&#39;", strip_tags($node->body->value));
+				$body = truncate($body, 240);
 			}
-            $variables['meta_description'] = $body;
 
-            $url = "https:///www.historyofvaccines.org" . $_SERVER['REQUEST_URI'];
-			$title = "The History of Vaccines";
-			if($node->title[0]->value) {
-				$title = $node->title[0]->value;
-			}
-			
-			$image = "https://www.historyofvaccines.org/themes/historyofvaccinesml/images/activities/Activity_Feature_01.jpg";
-
-            if ( $node->field_orig_filename[0]->value ) {
+            if (!empty($node->field_orig_filename[0]->value)) {
                 $orig_filename = $node->field_orig_filename[0]->value;
 
                 if (strlen($orig_filename) == 1){
@@ -162,9 +164,50 @@
                 $image = 'https://media.historyofvaccines.org/images/' . $orig_filename . '_540.jpg';
             }
 
-            $variables['meta_tags'] = create_meta_tags($title, str_replace("'", "&#39;", $body), $image, $url);
-        } else {
-            $variables['meta_tags'] = '';
+            if (!empty($node->field_related_media[0]->target_id)) {
+                $related_media_node = node_load($node->field_related_media[0]->target_id);
+
+                if (!empty($related_media_node)) {
+                    $orig_filename = $related_media_node->field_orig_filename[0]->value;
+
+                    if (strlen($orig_filename) == 1){
+                		$orig_filename = '00000' . $orig_filename;
+                    }
+                    if (strlen($orig_filename) == 2){
+                		$orig_filename = '0000' . $orig_filename;
+                    }
+                    if (strlen($orig_filename) == 3){
+                		$orig_filename = '000' . $orig_filename;
+                    }
+                    if (strlen($orig_filename) == 4){
+                		$orig_filename = '00' . $orig_filename;
+                    }
+                    if (strlen($orig_filename) == 5){
+                		$orig_filename = '0' . $orig_filename;
+                    }
+                    
+                    $image = 'https://media.historyofvaccines.org/images/' . $orig_filename . '_540.jpg';
+                }
+            }
+
+            if (!empty($node->field_body_image->entity->uri)) {
+                $image = file_create_url($node->field_body_image->entity->getFileUri());
+            }
+
+            if (!empty($node->field_featured_image->entity->uri)) {
+                $image = file_create_url($node->field_featured_image->entity->getFileUri());
+            }
+
+            if (!empty($node->field_image->entity->uri)) {
+                $image = file_create_url($node->field_image->entity->getFileUri());
+            }
+
+            if (!empty($node->field_thumbnail_image->entity->uri)) {
+                $image = file_create_url($node->field_thumbnail_image->entity->getFileUri());
+            }
+
+            // Setup meta tags based on page template/content
+            $variables['meta_tags'] = create_meta_tags($body, $image);
         }
 
 		
@@ -241,6 +284,13 @@
 				$variables['timeline_overview_highlight'] = $arr;
 				
 			}
+
+            if (!empty($temp[0]['value'])) {
+                $body = str_replace("'", "&#39;", strip_tags($temp[0]['value']));
+				$body = truncate($body, 240);
+			}
+            
+            $variables['meta_tags'] = create_meta_tags($body);
 		}
 		
 		
@@ -259,6 +309,8 @@
 			
 			$otherblogs = \Drupal\block\Entity\Block::load('otherblogs');
 			$variables['otherblogs'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($otherblogs);
+            
+            $variables['meta_tags'] = create_meta_tags();
 		}
 		
 		if(!$view) {
@@ -293,11 +345,14 @@
 			
 			$otherblogs = \Drupal\block\Entity\Block::load('otherblogs');
 			$variables['otherblogs'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($otherblogs);
+
+            $variables['meta_tags'] = create_meta_tags();
 		}
 
 		if($view == "taxonomy_term") {
             $blog_archive = \Drupal\block\Entity\Block::load('views_block__blog_archive_block_1');
             $variables['blog_archive'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($blog_archive);
+<<<<<<< HEAD
 
             $blog_categories = \Drupal\block\Entity\Block::load('views_block__blog_categories_block_1');
             $variables['blog_categories'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($blog_categories);
@@ -310,6 +365,22 @@
 
             $otherblogs = \Drupal\block\Entity\Block::load('otherblogs');
             $variables['otherblogs'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($otherblogs);
+=======
+
+            $blog_categories = \Drupal\block\Entity\Block::load('views_block__blog_categories_block_1');
+            $variables['blog_categories'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($blog_categories);
+
+            $popular_posts = \Drupal\block\Entity\Block::load('views_block__popular_posts_block_1');
+            $variables['popular_posts'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($popular_posts);
+
+            $recent_post = \Drupal\block\Entity\Block::load('views_block__recent_posts_block_1_3');
+            $variables['recent_post'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($recent_post);
+
+            $otherblogs = \Drupal\block\Entity\Block::load('otherblogs');
+            $variables['otherblogs'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($otherblogs);
+
+            $variables['meta_tags'] = create_meta_tags();
+>>>>>>> 5d3ca53f61e9b333aae23ba1b4c038897209c3c6
         }
 
         if($view == "blog_category_page") {
@@ -327,6 +398,11 @@
 
             $otherblogs = \Drupal\block\Entity\Block::load('otherblogs');
             $variables['otherblogs'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($otherblogs);
+<<<<<<< HEAD
+=======
+
+            $variables['meta_tags'] = create_meta_tags();
+>>>>>>> 5d3ca53f61e9b333aae23ba1b4c038897209c3c6
         }
 		
 		
@@ -354,6 +430,8 @@
 			
 			$common_questions_articles = \Drupal\block\Entity\Block::load('views_block__common_questions_articles_block_1');
 			$variables['common_questions_articles'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($common_questions_articles);
+
+            $variables['meta_tags'] = create_meta_tags();
 		}
 		
 		if($view == 'activities') {
@@ -362,23 +440,29 @@
 
 			$all_activities = \Drupal\block\Entity\Block::load('views_block__all_activities_block_1');
 			$variables['all_activities'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($all_activities);
+
+            $variables['meta_tags'] = create_meta_tags();
 		}
 		
 		if($view == 'gallery') {
 			$exposed_gallery_block = \Drupal\block\Entity\Block::load('exposedformgallerygallery');
 			$variables['exposed_form_gallery'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($exposed_gallery_block);
+
+            $variables['meta_tags'] = create_meta_tags();
 		}
 		
+        // Setup primary links navigation block
 		$primarylinksmenu = \Drupal\block\Entity\Block::load('primarylinks');
 		$variables['primarylinksmenu'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($primarylinksmenu);
 
+        // Setup is_admin variable if logged in as administrator role
         $current_user = \Drupal::currentUser();
         $roles = $current_user->getRoles();
         $variables['is_admin'] = in_array('administrator', $roles);
 		
+        // Setup language switcher
 		$langswitcher = \Drupal\block\Entity\Block::load('languageswitcher');
         $variables['languageswitcher'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($langswitcher);
-        
 	}
 
 	function historyofvaccines_preprocess_search_result(&$variables) {
@@ -393,28 +477,34 @@
 			$variables['url'] = $link;
 			
 		}
-
         $variables['type'] = $type;
-		
 	}
-    function create_meta_tags($title, $body, $image, $url) {
+
+    function truncate($string, $length=240, $append="&hellip;") {
+        $string = trim($string);
+    
+        if(strlen($string) > $length) {
+            $string = wordwrap($string, $length);
+            $string = explode("\n", $string, 2);
+            $string = $string[0] . $append;
+        }
+    
+        return $string;
+    }
+
+    function create_meta_tags($body="The History of Vaccines explores the role of immunization in the human experience and examines its continuing contributions to public health.", $image="https://www.historyofvaccines.org/themes/historyofvaccinesml/images/activities/Activity_Feature_01.jpg") {
+
 		$meta_tags = '';
 		
-		if($title) {
-			$meta_tags .= "<meta property='og:title' content='$title' />";
-		}
-		
-		if($body) {
+		if(isset($body)) {
 			$meta_tags .= "<meta name='description' content='$body'>";
 			$meta_tags .= "<meta property='og:description' content='$body' />";
 		}
 		
-		if($image) {
+		if(isset($image)) {
 			$meta_tags .= "<meta property='og:image' content='$image' />";
-		}
-		
-		$meta_tags .= "<meta property='og:url' content='$url' />";
-		
+            $meta_tags .= "<link rel='image_src' href='$image' />";
+		}		
 		
 		return $meta_tags;
 	}
