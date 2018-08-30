@@ -209,20 +209,47 @@
             // Setup meta tags based on page template/content
             $variables['meta_tags'] = create_meta_tags($body, $image);
         }
+
 		
+		$view = \Drupal::request()->attributes->get('view_id');
 		
-		if ($view == "timeline") {
+		if($view == "timeline") {
             $exposed_timeline_block = \Drupal\block\Entity\Block::load('exposedformtimelinepage_1');
 			$variables['exposed_form_timeline'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($exposed_timeline_block);
 
-            $categories = '';
-			
-			if (isset($_GET['timeline_categories'])) {
-                $categories = $_GET['timeline_categories'];
+            $pathFragments = explode('/', $_SERVER['REQUEST_URI']);
+            $end = end($pathFragments);
 
+            switch ($end) {
+                case "diseases-vaccines":
+                    $ids = 49;
+                    break;
+                case "diphtheria":
+                    $ids = 50;
+                    break;
+                case "measles":
+                    $ids = 51;
+                    break;
+                case "polio":
+                    $ids = 52;
+                    break;
+                case "smallpox":
+                    $ids = 53;
+                    break;
+                case "yellow-fever":
+                    $ids = 54;
+                    break;
+                case "others":
+                    $ids = 55;
+                    break;
+                case "pioneers":
+                    $ids = 56;
+                    break;
+            }
+			
+			if($ids) {
 				// get overview
-				$category_id = $categories[0];
-				$query = \Drupal::entityQuery('node')->condition('type', 'timeline_overview')->condition('field_timeline_categories', $category_id);
+				$query = \Drupal::entityQuery('node')->condition('type', 'timeline_overview')->condition('field_timeline_categories', $ids);
 				$nids = $query->execute();
 				$nids_array = array_keys($nids);
 				
@@ -233,11 +260,14 @@
 				$variables['timeline_overview_body'] = $temp[0]['value']; 
 				
 				//get highlight
-				$query = \Drupal::entityQuery('node')->condition('type', 'timeline_highlight')->condition('field_timeline_categories', $category_id);    
+				$query = \Drupal::entityQuery('node')->condition('type', 'timeline_highlight')->condition('field_timeline_categories', $ids);    
 				$nids = $query->execute();
 				
 				$arr = \Drupal\node\Entity\Node::loadMultiple($nids);
 				$variables['timeline_overview_highlight'] = $arr;
+
+                $variables['title'] = $nodeItem->title->value + " Timeline | History of Vaccines";
+
 			} else {
 				$query = \Drupal::entityQuery('node')->condition('type', 'timeline_overview')->condition('nid', 691);
 				$nids = $query->execute();

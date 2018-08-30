@@ -185,12 +185,12 @@
 			var val = $(this).val();
             var ind = $('#views-exposed-form-timeline-page-1 .form-select').index($(this));
 
-			if(val == 'All' && $(this).is(':checked')) {
+			if(val == 'All') {
 				$('#views-exposed-form-timeline-page-1 .form-select').prop('checked', false);
 				$('#views-exposed-form-timeline-page-1 .form-select:eq(0)').prop('checked', true);
 			} else {
-				//console.log($('#views-exposed-form-timeline-page-1 .form-select:eq(0)'));
-                $('#views-exposed-form-timeline-page-1 .form-select:eq(0)').prop('checked', false);
+                $('#views-exposed-form-timeline-page-1 .form-select').prop('checked', false);
+                $('#views-exposed-form-timeline-page-1 .form-select:eq(' + ind + ')').prop('checked', true);
 			}
 			
 			filterTimeline();
@@ -211,13 +211,40 @@
 			var filterQuery = '';
 			for(var i = 1; i < filters.length; i++) {
 				if(filters[i].checked) {
-					filterQuery += 'timeline_categories[]=' + filters[i].value + '&';
-				}	
+                    switch (filters[i].value){
+                        case "49":
+                            filterQuery = "diseases-vaccines";
+                            break;
+                        case "50":
+                            filterQuery = "diphtheria";
+                            break;
+                        case "51":
+                            filterQuery = "measles";
+                            break;
+                        case "52":
+                            filterQuery = "polio";
+                            break;
+                        case "53":
+                            filterQuery = "smallpox";
+                            break;
+                        case "54":
+                            filterQuery = "yellow-fever";
+                            break;
+                        case "55":
+                            filterQuery = "others";
+                            break;
+                        case "56":
+                            filterQuery = "pioneers";
+                            break;
+                        default:
+                            filterQuery = 'all';
+                            break;
+                    }
+				}
 			} 
 			
 			if(filterQuery) {
-				filterQuery = filterQuery.replace(/&+$/, "");
-				var url = path + "?" + filterQuery;
+				var url = window.location.protocol + '//' + window.location.host + "/timeline/" + filterQuery;
 				window.location = url;
 			} else {
 				window.location = path;
@@ -350,17 +377,45 @@
         var data = [];
         var timelineCount;
         var slider;
-        var query = getQueryVariable('timeline_categories[]');
+        var query = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
         var timeline;
+        var pageTitle = document.title;
         
-        if (query) {
-            var ids = query;
-        } else {
-            var ids = 'all';
+        switch (query){
+            case "diseases-vaccines":
+                var ids = 49;
+                break;
+            case "diphtheria":
+                var ids = 50;
+                break;
+            case "measles":
+                var ids = 51;
+                break;
+            case "polio":
+                var ids = 52;
+                break;
+            case "smallpox":
+                var ids = 53;
+                break;
+            case "yellow-fever":
+                var ids = 54;
+                break;
+            case "others":
+                var ids = 55;
+                break;
+            case "pioneers":
+                var ids = 56;
+                break;
+            case "timeline":
+            default:
+                var ids = 'all';
+                break;
         }
-        
-        if(ids == 'All') {
-	        ids = 'all';
+
+        if (ids != 'all'){
+            $('#edit-timeline-categories[value="All"]').prop("checked", false);
+            $('#edit-timeline-categories[value="' + ids + '"]').prop("checked", true);
+            document.title = "{{timeline_overview_title}} - " + pageTitle;
         }
         
         function round(number, increment, offset) {
