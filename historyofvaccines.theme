@@ -352,20 +352,6 @@
 		if($view == "taxonomy_term") {
             $blog_archive = \Drupal\block\Entity\Block::load('views_block__blog_archive_block_1');
             $variables['blog_archive'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($blog_archive);
-<<<<<<< HEAD
-
-            $blog_categories = \Drupal\block\Entity\Block::load('views_block__blog_categories_block_1');
-            $variables['blog_categories'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($blog_categories);
-
-            $popular_posts = \Drupal\block\Entity\Block::load('views_block__popular_posts_block_1');
-            $variables['popular_posts'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($popular_posts);
-
-            $recent_post = \Drupal\block\Entity\Block::load('views_block__recent_posts_block_1_3');
-            $variables['recent_post'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($recent_post);
-
-            $otherblogs = \Drupal\block\Entity\Block::load('otherblogs');
-            $variables['otherblogs'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($otherblogs);
-=======
 
             $blog_categories = \Drupal\block\Entity\Block::load('views_block__blog_categories_block_1');
             $variables['blog_categories'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($blog_categories);
@@ -380,7 +366,6 @@
             $variables['otherblogs'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($otherblogs);
 
             $variables['meta_tags'] = create_meta_tags();
->>>>>>> 5d3ca53f61e9b333aae23ba1b4c038897209c3c6
         }
 
         if($view == "blog_category_page") {
@@ -398,11 +383,8 @@
 
             $otherblogs = \Drupal\block\Entity\Block::load('otherblogs');
             $variables['otherblogs'] = \Drupal::entityTypeManager()->getViewBuilder('block')->view($otherblogs);
-<<<<<<< HEAD
-=======
 
             $variables['meta_tags'] = create_meta_tags();
->>>>>>> 5d3ca53f61e9b333aae23ba1b4c038897209c3c6
         }
 		
 		
