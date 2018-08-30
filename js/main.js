@@ -1,6 +1,6 @@
 (function ($) {
 
-    var isStaging = true;
+    var isStaging = false;
 	
 	$(".article .body a").each(function(){
 		
