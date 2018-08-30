@@ -69,18 +69,32 @@
 		
 {% verbatim %}
 <script id="item-template" type="text/x-handlebars-template">
-    <div style="width:220px; !important;">
-        <div class="year">{{year}}</div>
-        <div class="timeline-entry" data-caption="{{#each caption}}{{this}}|,|{{/each}}" data-copyright="{{#each copyright}}{{this}}|,|{{/each}}" data-creator="{{#each creator}}{{this}}|,|{{/each}}" id="{{id}}" data-datestr="{{datestr}}" data-nid="{{nid}}" data-year="{{year}}" data-uniqueid="{{id}}" data-title="{{title}}" data-body='{{description}}' data-filename="{{#each filename}}{{this}}|,|{{/each}}" data-filetype="{{#each filetype}}{{this}}|,|{{/each}}" data-toggle="modal" data-target="#myModal">
-				{{#isVideo filename.[0]}}{{/isVideo}}
-				
-			<div class="title">{{title}}</div>
-			<br style="clear:both" />
+    {{#group this by="segment"}}
+        <div class="vis-segment">
+            <div class="vis-segment-year">{{value}}</div>
+
+            <div class="vis-segment-item-wrapper">
+                {{#each items}}
+                    <div class="vis-segment-item">
+                        <div class="year">{{year}}</div>
+                        <div class="timeline-entry" data-caption="{{#each caption}}{{this}}|,|{{/each}}" data-copyright="{{#each copyright}}{{this}}|,|{{/each}}" data-creator="{{#each creator}}{{this}}|,|{{/each}}" id="{{id}}" data-datestr="{{datestr}}" data-nid="{{nid}}" data-year="{{year}}" data-uniqueid="{{id}}" data-title="{{title}}" data-body='{{description}}' data-filename="{{#each filename}}{{this}}|,|{{/each}}" data-filetype="{{#each filetype}}{{this}}|,|{{/each}}" data-toggle="modal" data-target="#myModal">
+                				{{#isVideo filename.[0]}}{{/isVideo}}
+                				
+                			<div class="title">{{title}}</div>
+                			<br style="clear:both" />
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
         </div>
-    </div>
+    {{/group}}
 </script>
 {% endverbatim %}
+
 <div id="visualization">
+    <div class="vis-wrapper">
+        <div id="visualization-container" class="vis-timeline"></div>
+    </div>
     <div id="visualization-filters"><span class="expand">FILTER</span>{{ exposed_form_timeline }}</div>
     <div id="visualization-timeline" class="">
         <a class="moveleft btn btn-default">&#9664;</a>
@@ -93,7 +107,7 @@
 	<div class="row">
 		<div class="col-md-8 timeline-overview">
 			
-			<h2>{{timeline_overview_title}}</h2>
+			<h1>{{timeline_overview_title}}</h1>
 			
 			<p class="timeline-overview">
 				{{timeline_overview_body|raw}}
@@ -158,42 +172,19 @@
 </div>
 
 <script type="text/javascript">
-        var isStaging = false;
+        var isStaging = true;
 
         var allCheckbox = $('#views-exposed-form-timeline-page-1 .form-select:eq(0)');
         $('#views-exposed-form-timeline-page-1 .form-select:eq(0)').parent().html(allCheckbox).append('<b>All</b>');
         
-        /*$('#views-exposed-form-timeline-page-1 .form-select').each(function(index){
-            var text = $(this).parent().text();
-            var input = $(this);
-			if(text) {
-	            if (text.startsWith(" -")){
-	                $(this).parent().html(input).append(text.substr(2,text.length));
-	                $(this).parent().parent().addClass('child');
-	            }
-	        }
-        });*/
         $('#visualization-filters .expand').on('click tap', function () {
             $(this).toggleClass('active').parent().find('form').toggleClass('in');
         });
-        $('#views-exposed-form-timeline-page-1').on('change', function(){
-	        //alert($(this).val());
-            //$(this).closest('form').submit();
-            
-            var filters = document.getElementsByName('timeline_categories');
-			for(var i = 0; i < filters.length; ++i)
-			{
-			    if(filters[i].checked) {
-				    //console.log(filters[i]);
-			    }
-			}
-        });
         
         $('#views-exposed-form-timeline-page-1 .form-select').on('change', function(){
-			//alert($(this).val() + " " + $(this).is(':checked'));
-			
 			var val = $(this).val();
             var ind = $('#views-exposed-form-timeline-page-1 .form-select').index($(this));
+
 			if(val == 'All' && $(this).is(':checked')) {
 				$('#views-exposed-form-timeline-page-1 .form-select').prop('checked', false);
 				$('#views-exposed-form-timeline-page-1 .form-select:eq(0)').prop('checked', true);
@@ -233,6 +224,7 @@
 			}
 			
 		}
+
         function getQueryVariable(variable){
             var query = window.location.search.substring(1);
             var vars = query.split("&");
@@ -242,6 +234,105 @@
             }
             return(false);
         }
+
+        Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, options) {
+            var operators, result;
+
+            if (arguments.length < 3) {
+                throw new Error("Handlerbars Helper 'compare' needs 2 parameters");
+            }
+        
+            if (options === undefined) {
+                options = rvalue;
+                rvalue = operator;
+                operator = "===";
+            }
+        
+            operators = {
+                '==': function (l, r) { return l == r; },
+                '===': function (l, r) { return l === r; },
+                '!=': function (l, r) { return l != r; },
+                '!==': function (l, r) { return l !== r; },
+                '<': function (l, r) { return l < r; },
+                '>': function (l, r) { return l > r; },
+                '<=': function (l, r) { return l <= r; },
+                '>=': function (l, r) { return l >= r; },
+                'typeof': function (l, r) { return typeof l == r; }
+            };
+        
+            if (!operators[operator]) {
+                throw new Error("Handlerbars Helper 'compare' doesn't know the operator " + operator);
+            }
+        
+            result = operators[operator](lvalue, rvalue);
+        
+            if (result) {
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
+            }
+        
+        });
+
+        function get(obj, prop) {
+        	var parts = prop.split('.'),
+        		last = parts.pop();
+        
+        	while ((prop = parts.shift())) {
+        		obj = obj[prop];
+        
+        		if (obj == null) {
+        			return;
+        		}
+        	}
+        
+        	return obj[last];
+        }
+        
+        function noop() {
+        	return '';
+        }
+
+        Handlebars.registerHelper('group', function(list, options){
+            options = options || {};
+
+			var fn = options.fn || noop,
+				inverse = options.inverse || noop,
+				hash = options.hash,
+				prop = hash && hash.by,
+				keys = [],
+				groups = {};
+
+			if (!prop || !list || !list.length) {
+				return inverse(this);
+			}
+
+			function groupKey(item) {
+				var key = get(item, prop);
+
+				if (keys.indexOf(key) === -1) {
+					keys.push(key);
+				}
+
+				if (!groups[key]) {
+					groups[key] = {
+						value: key,
+						items: []
+					};
+				}
+
+				groups[key].items.push(item);
+			}
+
+			function renderGroup(buffer, key) {
+				return buffer + fn(groups[key]);
+			}
+
+			list.forEach(groupKey);
+
+			return keys.reduce(renderGroup, '');
+        });
+
 		Handlebars.registerHelper('isVideo', function(filename) {
             if (filename) {
     			var imgURL = "https://media.historyofvaccines.org/images/"+ filename + "_90.jpg"
@@ -254,6 +345,7 @@
     			}
 			}
 		});
+
         var timelineData = [];
         var data = [];
         var timelineCount;
@@ -271,6 +363,10 @@
 	        ids = 'all';
         }
         
+        function round(number, increment, offset) {
+            return Math.floor((number - offset) / increment ) * increment + offset;
+        }
+
         var pathArray = window.location.pathname.split( '/' );
         if (pathArray[1] == 'es'){
             if(isStaging) {
@@ -285,7 +381,7 @@
                 var url = 'https://www.historyofvaccines.org/timeline.php?category_ids='+ ids + '&is_espanol=0';
             }
         }
-        //console.log(url);
+
         $.ajax({
             url: url,
             success: function(d) {
@@ -303,7 +399,6 @@
         
         			if(append == 1) {
         				append = 0;
-        				//timelineData[append_to].title.push(d[i].title);
         				timelineData[append_to].filename.push(d[i].filename);
                         timelineData[append_to].filetype.push(d[i].filetype);
                         timelineData[append_to].creator.push(d[i].field_creator);
@@ -313,7 +408,6 @@
                         if (d[i].year) {
 	                        
 	                        var dateStr = d[i].year;
-	                        //console.log(d[i].year);
 	                        var year = '';
 	                        if(dateStr.indexOf('/') == -1) {
                                 if (dateStr.indexOf(',') == -1) {
@@ -341,7 +435,8 @@
             						description: d[i].description,
             						datestr: d[i].year,
             						start: d[i].year,
-                                    nid: d[i].nid
+                                    nid: d[i].nid,
+                                    segment: round(year, 25, 25)
             					}
             				);
                         }
@@ -360,8 +455,11 @@
 				     } 
 				}
 				
-				timelineData.sort(sort_by('year', false, parseInt));  
+				timelineData.sort(sort_by('year', false, parseInt));
+
+
                 // Create an array of all media items
+                // And create timeline segments
                 $.each(timelineData, function(i){
                     for (i = 0; i < this.filename.length; i++){
                         data[this.filename[i]] = {
@@ -372,99 +470,106 @@
                             creator: this.creator[i]
                         };
                     }
-                    //console.log(data);
                 });
-        		//test
+
         		var source   = $("#item-template").html();
         		var template = Handlebars.compile(source);
-        		var html    = template(timelineData[0]);
-        		
-        				
-        		// create a handlebars template
-        		//var source   = document.getElementById('item-template').innerHTML;
-        		//var template = Handlebars.compile(document.getElementById('item-template').innerHTML);
-        		
+        		var html     = template(timelineData);
         		
         		
         		// DOM element where the Timeline will be attached
-        		var container = document.getElementById('visualization');
+        		var container = document.getElementById('visualization-container');
         		
-        		// Create a DataSet (allows two way data-binding)
-        		var items = new vis.DataSet(timelineData);
-        		
-        		// Configuration for the Timeline
-        		var options = {
-        			template: template,
-        			autoResize: true,
-        			height: '600px',
-                    showMinorLabels: true,
-                    min: '800',
-                    max: '2025',
-                    start: '1200',
-                    zoomMax: (473353890000),
-                    zoomMin: (473353890000),
-                    timeAxis: {scale: 'year', step: 25}
-        		};
         		
         		// Create a Timeline
-        		timeline = new vis.Timeline(container, items, options);
                 timelineCount = timelineData.length;
-        		
+                container.innerHTML = html;
+
+
+                $('.vis-segment').each(function() {
+                    var count = $(this).find('.vis-segment-item').length;
+                    var width;
+
+                    if (count == 1) {
+                        width = 260;
+                    }
+                    if (count == 2) {
+                        width = 260 + 40;
+                    }
+                    if (count > 3) {
+                        width = (260 * Math.ceil(count / 3));
+
+                        if (count % 3 == 2) {
+                            width += 40;
+                        }
+                        if (count % 3 == 0) {
+                            width += 80;
+                        }
+                        width += ((count / 3) * 20);
+                    }
+
+                    $(this).css('width', width + 'px');
+                });
+
+
+                function getTimelineWidth() {
+                    var width = 0;
+                    $('.vis-segment').each(function( index ){
+                        width += $(this).width();
+                    });
+
+                    return width;
+                }
+                var timelineWidth = getTimelineWidth();
+                var screenWidth = $('#visualization-container').width();
+
+
+        		// Timeout before moving the timeline to the hashed event
         		setTimeout(function(){
 	        		var eventLocationID = window.location.hash.substring(1);
         			
         			if(eventLocationID) {
         				eventLocationID = eventLocationID.replace("EVT_", "");
-        				timeline.setSelection(eventLocationID, {focus: true});
         				
         				$("#" + eventLocationID).click();
+                        
+                        var x = $("#" + eventLocationID).offset().left - (screenWidth/2);
+                        $('#visualization-container').animate({scrollLeft: x}, 1000);
+                        slider.slider( "option", "value", x );
+
         			} else {
                         eventLocationID = timelineData[0].id;
-        				timeline.setSelection(eventLocationID, {focus: true});
                     }
 	        	}, 300);
 	        	
-	        	
-	        	   console.log(timelineData[timelineData.length-1].year);
-	        	
-	        	var _value = timelineData[0].year - 1;
-	        	var _max = timelineData[timelineData.length-1].year;
-	        	
+
+                // Controls the slider at the bottom
                 slider = $('#visualization-timeline .slider').slider({
-	                min: _value,
-				    max: _max,
-				    value: _value,
+	                min: 0,
+				    max: timelineWidth,
+				    value: 0,
 				    slide: function( event, ui ) {
-				    	timeline.setWindow({
-                            start: Date.parse(ui.value)
-                        });
+				    	var x = ui.value;
+                        $('#visualization-container').scrollLeft(x);
 				    }
                 });
 	        	
-                
+                // Controls the arrows at the bottom slider
                 $('.moveleft').on('click', function(){
-                    var range = timeline.getWindow();
-                    var interval = range.end - range.start;
-        
-                    slider.slider('value', range.start.valueOf() - interval * 1.15);
+                    var x = $('#visualization-container').scrollLeft() - screenWidth;
+                    if (x < 0){ x == 0; }
                     
-        
-                    timeline.setWindow({
-                        start: range.start.valueOf() - interval * 1.15,
-                        end:   range.end.valueOf()   - interval * 1.15
-                    });
+                    $('#visualization-container').animate({scrollLeft: x}, 500);
                 });
         		$('.moveright').on('click', function(){
-                    var range = timeline.getWindow();
-                    var interval = range.end - range.start;
-        
-                    slider.slider('value', range.start.valueOf() - interval * -1.15);
-					
-					
-                    timeline.setWindow({
-                        start: range.start.valueOf() - interval * -1.15,
-                        end:   range.end.valueOf()   - interval * -1.15
-                    });
+                    var x = $('#visualization-container').scrollLeft() + screenWidth;
+                    if (x > timelineWidth){ x == timelineWidth; }
+                    
+                    $('#visualization-container').animate({scrollLeft: x}, 500);
+                });
+                $('#visualization-container').on('scroll', function(){
+                    var x = $('#visualization-container').scrollLeft();
+                    slider.slider( "option", "value", x );
                 });
             },
             error: function (err) {
@@ -473,43 +578,36 @@
         });
         
         function showTimelineItem(eventLocationID) {
-			timeline.setSelection(eventLocationID, {focus: true});
 			$("#" + eventLocationID).click();
         }
 </script>
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog timeline-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-dialog timeline-dialog" role="document">
+        <div class="modal-content">
     
-      <div class="modal-body">
+            <div class="modal-body">
       	
-      	<div style="cursor:pointer;" class="pull-right" data-dismiss="modal">
-      		<span class="glyphicon glyphicon-remove" style="z-index:10;"></span>
-      	</div>
+              	<div style="cursor:pointer;" class="pull-right" data-dismiss="modal">
+              		<span class="glyphicon glyphicon-remove" style="z-index:10;"></span>
+              	</div>
       	
-      	<div class="row">
-	        <div class="col-md-5 timeline-modal-left">
-	        	<div class="timeline-modal-image text-center">
-	        	
-	        	</div>
-			</div>
+                <div class="row">
+                    <div class="col-md-5 timeline-modal-left">
+                        <div class="timeline-modal-image text-center"></div>
+                    </div>
         
-			<div class="col-md-7 timeline-modal-right">
-                {% if is_admin %}
-                    <a href="" class="btn timeline-modal-edit-button">Edit</a>
-                {% endif %}
-				<p class="timeline-modal-date"></p>
-				<p class="timeline-modal-title"></p>
-				<p class="timeline-modal-body"></p>
-			</div>
-      </div>
-     
-      <!--<div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>-->
+        			<div class="col-md-7 timeline-modal-right">
+                        {% if is_admin %}
+                            <a href="" class="btn timeline-modal-edit-button">Edit</a>
+                        {% endif %}
+        				<p class="timeline-modal-date"></p>
+        				<p class="timeline-modal-title"></p>
+        				<p class="timeline-modal-body"></p>
+        			</div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-
