@@ -87,7 +87,8 @@
                             }
                             function handleComplete() {
                             	//This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
-                            	exportRoot = new lib.newimmunizationschedule();
+                                //This was changed from the original so it can apply to all. Remember to manually change this in the generated JS file.
+                            	exportRoot = new lib.allstagecontent();
                             	stage = new createjs.Stage(canvas);
                             	stage.addChild(exportRoot);
                             	stage.enableMouseOver();	
